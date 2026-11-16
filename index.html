@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Tahunan Digital - Kelas XII MA Al Fattah</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        handwriting: ['"Caveat"', 'cursive'],
+                    },
+                    colors: {
+                        emerald: {
+                            850: '#064e3b',
+                            950: '#022c22',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #059669; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #047857; }
+        .islamic-pattern {
+            background-color: #022c22;
+            background-image: radial-gradient(#065f46 1px, transparent 1px), radial-gradient(#065f46 1px, #022c22 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+        }
+        .note-paper {
+            background-image: repeating-linear-gradient(transparent, transparent 27px, #cbd5e1 28px);
+            line-height: 28px;
+        }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-emerald-600 selection:text-white">
+
+    <!-- Navbar / Header Utama (Sticky) -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <!-- Logo & Judul -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('pembuka')">
+                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-emerald-700 to-emerald-950 flex items-center justify-center text-amber-400 shadow-md">
+                        <i class="fa-solid fa-mosque text-lg md:text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block">Yearbook Angkatan 2026</span>
+                        <h1 class="font-serif font-bold text-lg md:text-xl text-slate-900 leading-tight">MA Al Fattah</h1>
+                    </div>
+                </div>
+
+                <!-- Navigasi Desktop -->
+                <nav class="hidden md:flex items-center space-x-1 bg-slate-100 p-1 rounded-2xl">
+                    <button type="button" onclick="switchTab('pembuka')" id="nav-pembuka" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold bg-emerald-800 text-white shadow-sm transition">
+                        <i class="fa-solid fa-book-open mr-1.5"></i> Pembuka
+                    </button>
+                    <button type="button" onclick="switchTab('guru')" id="nav-guru" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-chalkboard-user mr-1.5"></i> Guru & Staf
+                    </button>
+                    <button type="button" onclick="switchTab('siswa')" id="nav-siswa" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-user-graduate mr-1.5"></i> Biodata Siswa
+                    </button>
+                    <button type="button" onclick="switchTab('galeri')" id="nav-galeri" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-images mr-1.5"></i> Kilas Balik & TTD
+                    </button>
+                </nav>
+
+                <!-- Badge Kelas & Tombol Mode Admin -->
+                <div class="flex items-center space-x-2">
+                    <span id="global-sync-badge" class="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                        <span id="global-sync-dot" class="w-2 h-2 rounded-full bg-amber-400 mr-1.5 animate-pulse"></span>
+                        <span id="global-sync-label">Memuat...</span>
+                    </span>
+                    <button type="button" onclick="toggleAdminModal()" id="btn-admin-header" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition flex items-center space-x-1.5 cursor-pointer">
+                        <i id="icon-admin-header" class="fa-solid fa-lock text-slate-500"></i>
+                        <span id="text-admin-header">Mode Admin</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Banner Status Mode Admin -->
+    <div id="admin-banner" class="hidden bg-amber-500 text-emerald-950 px-4 py-2 text-xs sm:text-sm font-bold shadow-inner">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Mode Editor Admin Aktif — Perubahan otomatis tersimpan ke Google Sheets (Apps Script).</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button type="button" onclick="openApiConfigModal()" class="px-3 py-1 rounded-lg bg-white/80 hover:bg-white text-emerald-950 text-xs transition">
+                    <i class="fa-solid fa-link mr-1"></i> Atur API_URL
+                </button>
+                <button type="button" onclick="logoutAdmin()" class="px-3 py-1 rounded-lg bg-emerald-950 text-white text-xs hover:bg-emerald-900 transition">
+                    Keluar Mode Admin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigasi Bawah Mobile -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 px-2 py-1.5 flex justify-around items-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <button type="button" onclick="switchTab('pembuka')" id="mob-pembuka" class="mob-nav-btn flex flex-col items-center p-2 rounded-xl text-emerald-800 font-bold w-1/4">
+            <i class="fa-solid fa-book-open text-lg mb-1"></i>
+            <span class="text-[11px]">Pembuka</span>
+        </button>
+        <button type="button" onclick="switchTab('guru')" id="mob-guru" class="mob-nav-btn flex flex-col items-center p-2 rounded-xl text-slate-500 font-medium w-1/4">
+            <i class="fa-solid fa-chalkboard-user text-lg mb-1"></i>
+            <span class="text-[11px]">Guru</span>
+        </button>
+        <button type="button" onclick="switchTab('siswa')" id="mob-siswa" class="mob-nav-btn flex flex-col items-center p-2 rounded-xl text-slate-500 font-medium w-1/4">
+            <i class="fa-solid fa-user-graduate text-lg mb-1"></i>
+            <span class="text-[11px]">Siswa</span>
+        </button>
+        <button type="button" onclick="switchTab('galeri')" id="mob-galeri" class="mob-nav-btn flex flex-col items-center p-2 rounded-xl text-slate-500 font-medium w-1/4">
+            <i class="fa-solid fa-images text-lg mb-1"></i>
+            <span class="text-[11px]">Kenangan</span>
+        </button>
+    </nav>
+
+    <!-- KONTEN UTAMA -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 pb-24 md:pb-12">
+
+        <!-- 1. HALAMAN PEMBUKA -->
+        <section id="sec-pembuka" class="tab-section fade-in space-y-10">
+            <!-- Hero Banner -->
+            <div class="relative rounded-3xl overflow-hidden islamic-pattern text-white shadow-xl">
+                <div class="absolute inset-0 bg-gradient-to-r from-emerald-950/95 via-emerald-900/85 to-transparent"></div>
+                <button type="button" onclick="openAdminForm('pembuka_hero')" class="admin-only hidden absolute top-5 right-5 z-20 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-emerald-950 text-xs font-bold shadow-lg transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-pen"></i>
+                    <span>Edit Teks Pembuka</span>
+                </button>
+                <div class="relative z-10 p-8 md:p-14 lg:p-16 max-w-3xl space-y-6">
+                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs sm:text-sm font-semibold">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <span id="hero-badge-text">Edisi Spesial Kelulusan 2025/2026</span>
+                    </div>
+                    <h2 id="hero-title-text" class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white">
+                        Merajut Ilmu, Mengukir Akhlak, Menjemput Masa Depan.
+                    </h2>
+                    <p id="hero-desc-text" class="text-emerald-100/90 text-sm sm:text-base lg:text-lg leading-relaxed">
+                        Buku Tahunan Digital Kelas XII Program Ilmu Pengetahuan Alam (IPA) dan Program Keagamaan — Madrasah Aliyah Al Fattah. Sebuah ruang abadi untuk menyimpan jejak langkah, tawa, dan doa kita bersama.
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button type="button" onclick="switchTab('siswa')" class="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-emerald-950 font-bold text-sm transition shadow-lg shadow-amber-500/20 flex items-center">
+                            <span>Jelajahi Profil Angkatan</span>
+                            <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                        <button type="button" onclick="switchTab('galeri')" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-sm transition backdrop-blur-sm">
+                            Tulis Pesan Perpisahan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Konsep Tema & Daftar Isi -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col justify-between relative">
+                    <button type="button" onclick="openAdminForm('pembuka_tema')" class="admin-only hidden absolute top-5 right-5 px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold transition flex items-center space-x-1">
+                        <i class="fa-solid fa-pen"></i>
+                        <span>Edit Tema</span>
+                    </button>
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4 pr-20">
+                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-palette text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Konsep & Filosofi</span>
+                                <h3 id="tema-judul-text" class="font-serif text-xl sm:text-2xl font-bold text-slate-900">Tema: "Lentera Cendekia Nusantara"</h3>
+                            </div>
+                        </div>
+                        <p id="tema-p1-text" class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4">
+                            Desain buku tahunan angkatan ini mengusung tema "Lentera Cendekia Nusantara" yang memadukan estetika modern dengan sentuhan nuansa Islami klasik (Emerald Green & Warm Gold). Warna hijau zamrud melambangkan kedamaian, pertumbuhan ilmu agama, dan kesejukan hati khas santri/siswa madrasah, sementara aksen emas merepresentasikan kejayaan prestasi sains dan masa depan gemilang.
+                        </p>
+                        <p id="tema-p2-text" class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                            Perpaduan antara Kelas XII IPA yang analitis dan Kelas XII Keagamaan yang religius diibaratkan seperti dua sayap burung yang saling melengkapi untuk terbang tinggi menggapai ridha Ilahi.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-6 border-t border-slate-100 grid grid-cols-3 gap-4 text-center">
+                        <div class="p-3 rounded-2xl bg-slate-50">
+                            <span class="block font-serif text-2xl font-bold text-emerald-800">2</span>
+                            <span class="text-xs text-slate-500 font-medium">Program Jurusan</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-slate-50">
+                            <span class="block font-serif text-2xl font-bold text-emerald-800" id="stat-total-siswa">12</span>
+                            <span class="text-xs text-slate-500 font-medium">Alumni Angkatan</span>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-slate-50">
+                            <span class="block font-serif text-2xl font-bold text-amber-600">2026</span>
+                            <span class="text-xs text-slate-500 font-medium">Tahun Kelulusan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daftar Isi Interaktif -->
+                <div class="bg-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-serif text-xl font-bold text-amber-400 mb-2">Daftar Isi Digital</h3>
+                        <p class="text-emerald-200/80 text-xs mb-6">Klik bagian di bawah untuk langsung menuju halaman terkait.</p>
+                        
+                        <ul class="space-y-3">
+                            <li onclick="document.getElementById('sambutan-section').scrollIntoView({behavior:'smooth'})" class="p-3.5 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 cursor-pointer transition flex items-center justify-between group">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center text-xs font-bold">01</span>
+                                    <span class="text-sm font-medium">Sambutan Kepala & Wali Kelas</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-emerald-400 group-hover:translate-x-1 transition"></i>
+                            </li>
+                            <li onclick="switchTab('guru')" class="p-3.5 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 cursor-pointer transition flex items-center justify-between group">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center text-xs font-bold">02</span>
+                                    <span class="text-sm font-medium">Profil Dewan Guru & Staf</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-emerald-400 group-hover:translate-x-1 transition"></i>
+                            </li>
+                            <li onclick="switchTab('siswa')" class="p-3.5 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 cursor-pointer transition flex items-center justify-between group">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center text-xs font-bold">03</span>
+                                    <span class="text-sm font-medium">Biodata XII IPA & Keagamaan</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-emerald-400 group-hover:translate-x-1 transition"></i>
+                            </li>
+                            <li onclick="switchTab('galeri')" class="p-3.5 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 cursor-pointer transition flex items-center justify-between group">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center text-xs font-bold">04</span>
+                                    <span class="text-sm font-medium">Kilas Balik, Awards & Autograph</span>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-emerald-400 group-hover:translate-x-1 transition"></i>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 text-center">
+                        <span class="text-xs text-emerald-300 italic">"Al-Ilmu Nuurun — Ilmu adalah Cahaya"</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sambutan Kepala Madrasah & Wali Kelas -->
+            <div id="sambutan-section" class="space-y-6 pt-4">
+                <div class="text-center max-w-2xl mx-auto">
+                    <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Untaian Doa & Harapan</span>
+                    <h3 class="font-serif text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Sambutan Pimpinan & Wali Kelas</h3>
+                </div>
+
+                <!-- Sambutan Kepala Madrasah -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm relative">
+                    <button type="button" onclick="openAdminForm('sambutan', 'kepala')" class="admin-only hidden absolute top-5 right-5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow transition flex items-center space-x-1">
+                        <i class="fa-solid fa-pen"></i>
+                        <span>Edit Sambutan & Foto</span>
+                    </button>
+                    <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
+                        <img id="sambutan-kepala-foto" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80" alt="Kepala Madrasah" class="w-28 h-32 sm:w-36 sm:h-40 rounded-2xl object-cover object-top border-4 border-amber-400/50 shadow-md flex-shrink-0" onerror="this.src='https://placehold.co/300x300/064e3b/fbbf24?text=Kepala+Madrasah'">
+                        <div class="space-y-3 text-center md:text-left">
+                            <div>
+                                <span id="sambutan-kepala-jabatan" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Kepala Madrasah Aliyah Al Fattah</span>
+                                <h4 id="sambutan-kepala-nama" class="font-serif text-xl sm:text-2xl font-bold text-slate-900 mt-2">Drs. H. Ahmad Fauzi, M.Pd.I</h4>
+                            </div>
+                            <p id="sambutan-kepala-isi" class="text-slate-600 text-sm sm:text-base leading-relaxed italic">
+                                "Assalamu'alaikum Warahmatullahi Wabarakatuh. Anak-anakku kelas XII IPA dan XII Keagamaan yang Bapak banggakan, tiga tahun telah berlalu begitu cepat. Kalian telah menempuh perjalanan panjang menuntut ilmu di MA Al Fattah. Ingatlah, gelar alumni madrasah adalah amanah. Jadilah ilmuwan yang berjiwa ulama, dan ulama yang berwawasan luas. Terbanglah tinggi menggapai cita, namun jangan pernah lupa untuk tetap membumi dengan akhlakul karimah. Doa Bapak dan seluruh dewan guru senantiasa menyertai setiap langkah kalian."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sambutan Wali Kelas IPA & Keagamaan -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between relative">
+                        <button type="button" onclick="openAdminForm('sambutan', 'wali_ipa')" class="admin-only hidden absolute top-4 right-4 px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow transition flex items-center space-x-1">
+                            <i class="fa-solid fa-pen"></i>
+                            <span>Edit</span>
+                        </button>
+                        <div class="flex items-center space-x-4 mb-4 pr-14">
+                            <img id="sambutan-wali_ipa-foto" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80" alt="Wali Kelas IPA" class="w-16 h-20 rounded-2xl object-cover object-top border-2 border-emerald-600 flex-shrink-0" onerror="this.src='https://placehold.co/200x200/059669/ffffff?text=Wali+IPA'">
+                            <div>
+                                <span id="sambutan-wali_ipa-jabatan" class="text-xs font-bold text-blue-600 uppercase">Wali Kelas XII IPA</span>
+                                <h5 id="sambutan-wali_ipa-nama" class="font-serif text-lg font-bold text-slate-900">Siti Rahmawati, S.Si., M.Pd</h5>
+                            </div>
+                        </div>
+                        <p id="sambutan-wali_ipa-isi" class="text-slate-600 text-sm leading-relaxed">
+                            "Untuk anak-anakku pejuang rumus dan praktikum di XII IPA: Hidup ini seperti reaksi kimia, terkadang butuh katalis kesabaran dan energi aktivasi kerja keras untuk menghasilkan produk kesuksesan. Terima kasih atas tawa dan kebersamaan selama ini. Sukses selalu untuk masa depan kalian!"
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between relative">
+                        <button type="button" onclick="openAdminForm('sambutan', 'wali_agama')" class="admin-only hidden absolute top-4 right-4 px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow transition flex items-center space-x-1">
+                            <i class="fa-solid fa-pen"></i>
+                            <span>Edit</span>
+                        </button>
+                        <div class="flex items-center space-x-4 mb-4 pr-14">
+                            <img id="sambutan-wali_agama-foto" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="Wali Kelas Agama" class="w-16 h-20 rounded-2xl object-cover object-top border-2 border-amber-500 flex-shrink-0" onerror="this.src='https://placehold.co/200x200/d97706/ffffff?text=Wali+Agama'">
+                            <div>
+                                <span id="sambutan-wali_agama-jabatan" class="text-xs font-bold text-emerald-700 uppercase">Wali Kelas XII Keagamaan</span>
+                                <h5 id="sambutan-wali_agama-nama" class="font-serif text-lg font-bold text-slate-900">Ust. Muhammad Ridwan, Lc., M.A</h5>
+                            </div>
+                        </div>
+                        <p id="sambutan-wali_agama-isi" class="text-slate-600 text-sm leading-relaxed">
+                            "Anak-anakku kelas XII Keagamaan yang dirahmati Allah, kitab-kitab yang kita kaji bersama hanyalah pembuka gerbang samudra ilmu. Teruslah berkhidmat untuk umat, jaga hafalan dan adab kalian di manapun berada. Semoga ilmu kalian menjadi amal jariyah yang tak terputus."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. PROFIL GURU DAN STAF -->
+        <section id="sec-guru" class="tab-section hidden fade-in space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-6">
+                <div>
+                    <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Pahlawan Tanpa Tanda Jasa</span>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Profil Guru & Staf MA Al Fattah</h2>
+                    <p class="text-slate-500 text-sm mt-1">Sosok-sosok inspiratif beserta kutipan ikonik yang selalu terngiang di ruang kelas.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-semibold border border-emerald-200">
+                        <i class="fa-solid fa-users mr-1"></i> Dewan Pendidik & Staf
+                    </span>
+                    <button type="button" onclick="openAdminForm('guru')" class="admin-only hidden px-4 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition flex items-center">
+                        <i class="fa-solid fa-plus mr-1.5"></i> Tambah Guru / Staf
+                    </button>
+                </div>
+            </div>
+
+            <div id="grid-guru" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- 3. HALAMAN BIODATA SISWA -->
+        <section id="sec-siswa" class="tab-section hidden fade-in space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div>
+                            <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Direktori Alumni 2026</span>
+                            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-slate-900">Biodata Siswa Kelas XII</h2>
+                        </div>
+                        <button type="button" onclick="openAdminForm('siswa')" class="admin-only hidden px-4 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition flex items-center">
+                            <i class="fa-solid fa-user-plus mr-1.5"></i> Tambah Siswa
+                        </button>
+                    </div>
+
+                    <div class="flex bg-slate-100 p-1 rounded-2xl self-start md:self-auto">
+                        <button type="button" onclick="filterSiswa('ALL')" id="filter-all" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-800 text-white shadow-sm transition">
+                            Semua (12)
+                        </button>
+                        <button type="button" onclick="filterSiswa('XII IPA')" id="filter-ipa" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition">
+                            XII IPA (6)
+                        </button>
+                        <button type="button" onclick="filterSiswa('XII Keagamaan')" id="filter-agama" class="filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition">
+                            XII Keagamaan (6)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2 border-t border-slate-100">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="search-siswa" onkeyup="renderSiswa()" placeholder="Cari nama lengkap, panggilan, cita-cita, atau hobi..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition">
+                    </div>
+                    
+                    <div class="flex items-center justify-between sm:justify-end bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl space-x-3">
+                        <span class="text-xs font-semibold text-amber-900"><i class="fa-solid fa-camera-rotate mr-1"></i> Tampilan Foto:</span>
+                        <div class="flex bg-white rounded-lg p-0.5 border border-amber-200">
+                            <button type="button" onclick="setPhotoMode('formal')" id="btn-mode-formal" class="px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-white transition">Formal</button>
+                            <button type="button" onclick="setPhotoMode('kasual')" id="btn-mode-kasual" class="px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 transition">Kasual</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="grid-siswa" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+
+            <div id="empty-siswa" class="hidden text-center py-12 bg-white rounded-3xl border border-slate-200">
+                <i class="fa-solid fa-user-slash text-4xl text-slate-300 mb-3"></i>
+                <h4 class="font-bold text-slate-700">Siswa tidak ditemukan</h4>
+                <p class="text-sm text-slate-500">Coba kata kunci pencarian lain atau ubah filter kelas.</p>
+            </div>
+        </section>
+
+        <!-- 4. KILAS BALIK, AWARDS & AUTOGRAPH -->
+        <section id="sec-galeri" class="tab-section hidden fade-in space-y-12">
+            <div class="space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest">Jejak Langkah Bersama</span>
+                        <h2 class="font-serif text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Kilas Balik & Galeri Kenangan</h2>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-slate-500">Klik foto untuk memperbesar momen</span>
+                        <button type="button" onclick="openAdminForm('galeri')" class="admin-only hidden px-4 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition flex items-center">
+                            <i class="fa-solid fa-camera mr-1.5"></i> Upload Foto Kegiatan
+                        </button>
+                    </div>
+                </div>
+
+                <div id="grid-galeri" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <div class="bg-emerald-950 rounded-3xl p-6 sm:p-10 text-white shadow-xl space-y-6">
+                <div class="text-center max-w-2xl mx-auto space-y-2">
+                    <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold uppercase tracking-wider">Angkatan 2026 Awards</span>
+                    <h3 class="font-serif text-2xl sm:text-3xl font-bold text-white mt-2">Nominasi & Penghargaan Unik</h3>
+                    <p class="text-emerald-200/80 text-sm">Kategori apresiatif dan seru hasil voting seluruh siswa kelas XII IPA & Keagamaan.</p>
+                    <div class="pt-2">
+                        <button type="button" onclick="openAdminForm('awards')" class="admin-only hidden mx-auto px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-emerald-950 text-xs font-bold shadow-sm transition inline-flex items-center">
+                            <i class="fa-solid fa-trophy mr-1.5"></i> Tambah Nominasi Award
+                        </button>
+                    </div>
+                </div>
+
+                <div id="grid-awards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"></div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+                    <div>
+                        <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Autograph & Wall of Wishes</span>
+                        <h3 class="font-serif text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Halaman Tanda Tangan & Pesan</h3>
+                        <p class="text-slate-600 text-sm mt-1">Tuliskan pesan kesan, coretan tanda tangan digital, atau harapan untuk teman seangkatan!</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-5 space-y-4 bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200">
+                        <h4 class="font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-pen-nib text-emerald-700 mr-2"></i> Tulis Coretan Kenanganmu
+                        </h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap / Panggilan</label>
+                            <input type="text" id="auto-nama" placeholder="Contoh: Ahmad Zaki (XII IPA)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Pesan & Kesan Perpisahan</label>
+                            <textarea id="auto-pesan" rows="3" placeholder="Tulis pesan manis, lucu, atau doa untuk teman-teman..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600"></textarea>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-semibold text-slate-600">Bubuhkan Tanda Tangan (Gunakan Mouse/Sentuhan)</label>
+                                <button type="button" onclick="clearSignature()" class="text-xs text-rose-600 hover:underline font-medium">
+                                    <i class="fa-solid fa-eraser mr-1"></i>Hapus TTD
+                                </button>
+                            </div>
+                            <div class="bg-white rounded-xl border-2 border-dashed border-slate-300 overflow-hidden touch-none">
+                                <canvas id="sig-canvas" class="w-full h-32 cursor-crosshair block"></canvas>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-submit-autograph" onclick="submitAutograph()" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> Tempelkan di Buku Tahunan
+                        </button>
+                    </div>
+
+                    <div class="lg:col-span-7">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center">
+                                <span id="sync-indicator" class="w-2 h-2 rounded-full bg-amber-400 mr-2 animate-pulse"></span>
+                                <span id="sync-status-text">Menghubungkan ke Google Sheets...</span>
+                            </span>
+                            <span id="autograph-count" class="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                                0 Pesan
+                            </span>
+                        </div>
+                        <div id="autograph-wall" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[540px] overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL DETAIL BIODATA SISWA -->
+    <div id="modal-siswa" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" onclick="closeModalSiswa()">
+        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 relative my-auto animate-[fadeIn_0.25s_ease-out]" onclick="event.stopPropagation()">
+            <button type="button" onclick="closeModalSiswa()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-siswa-content"></div>
+        </div>
+    </div>
+
+    <!-- MODAL LIGHTBOX GALERI -->
+    <div id="modal-galeri" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModalGaleri()">
+        <div class="max-w-3xl w-full bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-white/10" onclick="event.stopPropagation()">
+            <div class="relative">
+                <img id="lightbox-img" src="" alt="Preview" class="w-full max-h-[70vh] object-contain bg-black">
+                <button type="button" onclick="closeModalGaleri()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-5 text-white">
+                <h4 id="lightbox-title" class="font-serif text-lg font-bold text-amber-400"></h4>
+                <p id="lightbox-desc" class="text-sm text-slate-300 mt-1"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-20 md:bottom-6 right-4 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-emerald-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center space-x-3 text-sm font-medium border border-emerald-700 pointer-events-none">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-msg">Pesan berhasil disimpan!</span>
+    </div>
+
+    <!-- MODAL LOGIN ADMIN -->
+    <div id="modal-admin-login" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 relative">
+            <button type="button" onclick="closeAdminLogin()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center space-y-2">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto text-xl">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="font-serif text-xl font-bold text-slate-900">Akses Editor Admin</h3>
+                <p class="text-xs text-slate-500">Masukkan PIN Admin panitia buku tahunan untuk menambah, mengedit, atau menghapus data & foto.</p>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">PIN Keamanan Admin</label>
+                    <input type="password" id="input-admin-pin" onkeyup="if(event.key==='Enter') verifyAdminPin()" placeholder="Masukkan PIN (Default: 2026)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm text-center tracking-widest font-bold focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                </div>
+                <button type="button" onclick="verifyAdminPin()" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm transition shadow-md">
+                    Masuk Sebagai Admin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PENGATURAN API_URL (OPSIONAL DARI UI ADMIN) -->
+    <div id="modal-api-config" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-4 relative">
+            <button type="button" onclick="closeApiConfigModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div>
+                <h3 class="font-serif text-xl font-bold text-slate-900">Konfigurasi Google Apps Script URL</h3>
+                <p class="text-xs text-slate-500 mt-1">Tempelkan URL Web App deployment dari Google Apps Script (berakhiran <code>/exec</code>). Untuk permanen di GitHub, isi juga variabel <code>API_URL</code> di dalam file <code>index.html</code>.</p>
+            </div>
+            <div class="space-y-3">
+                <input type="url" id="input-api-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <div class="flex gap-2">
+                    <button type="button" onclick="saveCustomApiUrl()" class="flex-1 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs transition">
+                        Simpan & Muat Ulang Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FORM INPUT & EDIT DATA (KHUSUS ADMIN) -->
+    <div id="modal-admin-form" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 my-auto relative">
+            <button type="button" onclick="closeAdminForm()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="admin-form-container"></div>
+        </div>
+    </div>
+
+    <!-- MODAL KONFIRMASI HAPUS (KHUSUS ADMIN) -->
+    <div id="modal-admin-delete" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <div>
+                <h3 class="font-serif text-lg font-bold text-slate-900">Hapus Data Ini?</h3>
+                <p id="delete-confirm-text" class="text-xs text-slate-500 mt-1">Data yang dihapus akan hilang dari tampilan buku tahunan.</p>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+                    Batal
+                </button>
+                <button type="button" id="btn-confirm-delete" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- SCRIPT LOGIKA APLIKASI & KONEKSI GOOGLE APPS SCRIPT (GITHUB READY)    -->
+    <!-- ===================================================================== -->
+    <script>
+        /**
+         * ====================================================================
+         * KONFIGURASI PENYEMATAN API_URL GOOGLE APPS SCRIPT UNTUK GITHUB
+         * ====================================================================
+         * Ganti teks di bawah ini dengan URL Web App dari Google Apps Script Anda
+         * Contoh: "https://script.google.com/macros/s/AKfycbx.../exec"
+         */
+        let API_URL = "PASTE_URL_WEB_APP_GOOGLE_APPS_SCRIPT_ANDA_DISINI";
+
+        // Memungkinkan override sementara dari pengaturan admin jika belum ditempel permanen di kode
+        const savedUrlOverride = sessionStorage.getItem('ma_alfattah_api_url');
+        if (savedUrlOverride) {
+            API_URL = savedUrlOverride;
+        }
+
+        function isApiConfigured() {
+            return API_URL && API_URL.startsWith('https://script.google.com/');
+        }
+
+        // --- STATE UTAMA APLIKASI ---
+        const ADMIN_PIN = "2026";
+        let isAdmin = false;
+        let currentTab = 'pembuka';
+        let editingItem = null;
+        let pendingDelete = null;
+        let currentKelasFilter = 'ALL';
+        let currentPhotoMode = 'formal';
+        let activeModalSiswaId = null;
+        let activeModalPhotoMode = 'formal';
+
+        // --- 1. DATA BAWAAN (DEFAULT) ---
+        const defaultPembuka = {
+            heroBadge: "Edisi Spesial Kelulusan 2025/2026",
+            heroTitle: "Merajut Ilmu, Mengukir Akhlak, Menjemput Masa Depan.",
+            heroDesc: "Buku Tahunan Digital Kelas XII Program Ilmu Pengetahuan Alam (IPA) dan Program Keagamaan — Madrasah Aliyah Al Fattah. Sebuah ruang abadi untuk menyimpan jejak langkah, tawa, dan doa kita bersama.",
+            temaJudul: 'Tema: "Lentera Cendekia Nusantara"',
+            temaP1: 'Desain buku tahunan angkatan ini mengusung tema "Lentera Cendekia Nusantara" yang memadukan estetika modern dengan sentuhan nuansa Islami klasik (Emerald Green & Warm Gold). Warna hijau zamrud melambangkan kedamaian, pertumbuhan ilmu agama, dan kesejukan hati khas santri/siswa madrasah, sementara aksen emas merepresentasikan kejayaan prestasi sains dan masa depan gemilang.',
+            temaP2: 'Perpaduan antara Kelas XII IPA yang analitis dan Kelas XII Keagamaan yang religius diibaratkan seperti dua sayap burung yang saling melengkapi untuk terbang tinggi menggapai ridha Ilahi.',
+            sambutan: {
+                kepala: {
+                    jabatan: "Kepala Madrasah Aliyah Al Fattah",
+                    nama: "Drs. H. Ahmad Fauzi, M.Pd.I",
+                    foto: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80",
+                    isi: '"Assalamu\'alaikum Warahmatullahi Wabarakatuh. Anak-anakku kelas XII IPA dan XII Keagamaan yang Bapak banggakan, tiga tahun telah berlalu begitu cepat. Kalian telah menempuh perjalanan panjang menuntut ilmu di MA Al Fattah. Ingatlah, gelar alumni madrasah adalah amanah. Jadilah ilmuwan yang berjiwa ulama, dan ulama yang berwawasan luas. Terbanglah tinggi menggapai cita, namun jangan pernah lupa untuk tetap membumi dengan akhlakul karimah. Doa Bapak dan seluruh dewan guru senantiasa menyertai setiap langkah kalian."'
+                },
+                wali_ipa: {
+                    jabatan: "Wali Kelas XII IPA",
+                    nama: "Siti Rahmawati, S.Si., M.Pd",
+                    foto: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
+                    isi: '"Untuk anak-anakku pejuang rumus dan praktikum di XII IPA: Hidup ini seperti reaksi kimia, terkadang butuh katalis kesabaran dan energi aktivasi kerja keras untuk menghasilkan produk kesuksesan. Terima kasih atas tawa dan kebersamaan selama ini. Sukses selalu untuk masa depan kalian!"'
+                },
+                wali_agama: {
+                    jabatan: "Wali Kelas XII Keagamaan",
+                    nama: "Ust. Muhammad Ridwan, Lc., M.A",
+                    foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+                    isi: '"Anak-anakku kelas XII Keagamaan yang dirahmati Allah, kitab-kitab yang kita kaji bersama hanyalah pembuka gerbang samudra ilmu. Teruslah berkhidmat untuk umat, jaga hafalan dan adab kalian di manapun berada. Semoga ilmu kalian menjadi amal jariyah yang tak terputus."'
+                }
+            }
+        };
+
+        const defaultGuru = [
+            {
+                id: "def_guru_1",
+                nama: "Drs. H. Ahmad Fauzi, M.Pd.I",
+                jabatan: "Kepala Madrasah",
+                foto: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80",
+                quote: "Ilmu tanpa adab bagaikan pohon tanpa buah. Jaga shalatmu, maka Allah akan jaga masa depanmu."
+            },
+            {
+                id: "def_guru_2",
+                nama: "Siti Rahmawati, S.Si., M.Pd",
+                jabatan: "Wali Kelas XII IPA & Guru Kimia",
+                foto: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
+                quote: "Jangan takut salah menghitung mol, yang penting jangan salah melangkah dalam hidup!"
+            },
+            {
+                id: "def_guru_3",
+                nama: "Ust. Muhammad Ridwan, Lc., M.A",
+                jabatan: "Wali Kelas XII Keagamaan & Tafsir",
+                foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+                quote: "Barangsiapa bersungguh-sungguh mengkaji ayat-Nya, Allah akan bukakan pintu hikmah dari arah tak terduga."
+            },
+            {
+                id: "def_guru_4",
+                nama: "Budi Santoso, S.Pd",
+                jabatan: "Guru Fisika & Matematika Peminatan",
+                foto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80",
+                quote: "Gaya (F) berbanding lurus dengan percepatan. Kalau mau cepat sukses, perbesar gaya usahamu!"
+            },
+            {
+                id: "def_guru_5",
+                nama: "Ustadzah Nurul Hidayah, S.Ag",
+                jabatan: "Guru Fiqih & Ushul Fiqih",
+                foto: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80",
+                quote: "Kumpulkan tugas tepat waktu itu hukumnya wajib 'ain di kelas Ibu, ya anak-anak!"
+            },
+            {
+                id: "def_guru_6",
+                nama: "Hendra Wijaya, S.Kom",
+                jabatan: "Kepala TU & Pembina Ekskul",
+                foto: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80",
+                quote: "Administrasi rapi, masa depan pasti! Jangan lupa legalisir ijazah kalau sudah kuliah nanti."
+            }
+        ];
+
+        const defaultSiswa = [
+            {
+                id: "def_siswa_1",
+                kelas: "XII IPA",
+                namaLengkap: "Muhammad Zaki Al-Ghifari",
+                panggilan: "Zaki",
+                ttl: "Bandung, 14 Mei 2008",
+                alamat: "Jl. Melati Indah No. 12, Kec. Sukajadi",
+                telepon: "0812-3456-7890",
+                email: "zaki.ghifari@gmail.com",
+                sosmed: "@zakighifari_",
+                citaCita: "Dokter Spesialis Bedah",
+                hobi: "Futsal, Membaca Buku Sains, Fotografi",
+                quote: "Dari lab biologi MA Al Fattah menuju ruang operasi masa depan. Bismillah!",
+                fotoFormal: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_2",
+                kelas: "XII IPA",
+                namaLengkap: "Aisyah Putri Ramadhani",
+                panggilan: "Aisyah",
+                ttl: "Jakarta, 22 September 2008",
+                alamat: "Komp. Griya Asri Blok C4 No. 8",
+                telepon: "0857-9876-5432",
+                email: "aisyah.ramadhani@gmail.com",
+                sosmed: "@aisyahputri.r",
+                citaCita: "Apoteker & Peneliti Farmasi",
+                hobi: "Journaling, Memasak, Kaligrafi",
+                quote: "Terima kasih XII IPA, kalian adalah senyawa paling stabil dalam hidupku.",
+                fotoFormal: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_3",
+                kelas: "XII IPA",
+                namaLengkap: "Rizky Pratama Nugraha",
+                panggilan: "Kiki",
+                ttl: "Surabaya, 03 Januari 2008",
+                alamat: "Jl. Raya Pesantren No. 45",
+                telepon: "0821-1122-3344",
+                email: "rizkynugraha08@gmail.com",
+                sosmed: "@kikipratama.id",
+                citaCita: "Software Engineer / AI Developer",
+                hobi: "Coding, Main Catur, Mendaki Gunung",
+                quote: "Hukum Newton pertama: Benda akan tetap diam kalau tidak ada tugas fisika dari Pak Budi.",
+                fotoFormal: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_4",
+                kelas: "XII IPA",
+                namaLengkap: "Nabila Zahra Khairunnisa",
+                panggilan: "Bila",
+                ttl: "Yogyakarta, 19 Juli 2008",
+                alamat: "Perum Permata Hijau Blok B-10",
+                telepon: "0896-5544-3322",
+                email: "nabilazahra.k@gmail.com",
+                sosmed: "@nabilazhr_",
+                citaCita: "Arsitek Lanskap",
+                hobi: "Melukis Cat Air, Desain Grafis",
+                quote: "Setiap sudut koridor madrasah punya cerita. Sampai jumpa di puncak kesuksesan!",
+                fotoFormal: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_5",
+                kelas: "XII IPA",
+                namaLengkap: "Fajar Siddiq Maulana",
+                panggilan: "Fajar",
+                ttl: "Malang, 11 November 2007",
+                alamat: "Jl. Kenanga III No. 21",
+                telepon: "0813-7788-9900",
+                email: "fajarsiddiq@gmail.com",
+                sosmed: "@fajarsiddiq_",
+                citaCita: "Insinyur Teknik Sipil",
+                hobi: "Bulu Tangkis, Otomotif",
+                quote: "Bukan tentang seberapa cepat kita lulus, tapi seberapa kuat fondasi ilmu yang kita bangun.",
+                fotoFormal: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_6",
+                kelas: "XII IPA",
+                namaLengkap: "Salma Salsabila",
+                panggilan: "Salma",
+                ttl: "Semarang, 28 Februari 2008",
+                alamat: "Jl. Diponegoro No. 88",
+                telepon: "0852-6677-8899",
+                email: "salmasalsa@gmail.com",
+                sosmed: "@salmasalsabila",
+                citaCita: "Ahli Gizi & Kesehatan Masyarakat",
+                hobi: "Baking, Nonton Dokumenter",
+                quote: "Kantin madrasah saksi bisu perjuangan kita melewati jam pelajaran terakhir!",
+                fotoFormal: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_7",
+                kelas: "XII Keagamaan",
+                namaLengkap: "Ahmad Syauqi Mubarak",
+                panggilan: "Syauqi",
+                ttl: "Cirebon, 05 April 2008",
+                alamat: "Komp. Pondok Al Fattah Putra",
+                telepon: "0812-9988-7766",
+                email: "syauqimubarak@gmail.com",
+                sosmed: "@syauqi.mbrk",
+                citaCita: "Dosen Ilmu Tafsir & Qari Internasional",
+                hobi: "Tilawah, Hadrah, Membaca Kitab Kuning",
+                quote: "Al-Qur'an di dada, teknologi di genggaman. Siap berdakwah di era digital!",
+                fotoFormal: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_8",
+                kelas: "XII Keagamaan",
+                namaLengkap: "Fatimah Az-Zahra",
+                panggilan: "Zahra",
+                ttl: "Bogor, 17 Agustus 2008",
+                alamat: "Asrama Putri Al Fattah Kamar 04",
+                telepon: "0856-1234-9876",
+                email: "fatimah.zahra08@gmail.com",
+                sosmed: "@zahra.azzhr",
+                citaCita: "Hakim Pengadilan Agama",
+                hobi: "Debat Bahasa Arab, Menulis Puisi",
+                quote: "Kaidah Ushul Fiqih mengajarkanku bahwa setiap masalah pasti ada jalan keluarnya.",
+                fotoFormal: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_9",
+                kelas: "XII Keagamaan",
+                namaLengkap: "Ibrahim Hafidz Al-Mansyur",
+                panggilan: "Hafidz",
+                ttl: "Solo, 30 Oktober 2007",
+                alamat: "Jl. Masjid Agung No. 19",
+                telepon: "0878-4455-6677",
+                email: "ibrahim.hafidz@gmail.com",
+                sosmed: "@hafidz.mansyur",
+                citaCita: "Diplomat Timur Tengah",
+                hobi: "Pidato 3 Bahasa, Panahan",
+                quote: "Man jadda wajada! Terima kasih kawan-kawan XII Keagamaan atas ukhuwah yang luar biasa.",
+                fotoFormal: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_10",
+                kelas: "XII Keagamaan",
+                namaLengkap: "Khadijah Al-Kubra",
+                panggilan: "Dijah",
+                ttl: "Tasikmalaya, 12 Desember 2008",
+                alamat: "Jl. Cempaka Putih No. 7",
+                telepon: "0822-3344-5566",
+                email: "khadijah.k@gmail.com",
+                sosmed: "@khadijah.alkubra",
+                citaCita: "Psikolog Islam & Konselor Keluarga",
+                hobi: "Public Speaking, Merajut",
+                quote: "Semoga perpisahan ini hanya jarak di peta, namun tetap dekat dalam untaian doa.",
+                fotoFormal: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_11",
+                kelas: "XII Keagamaan",
+                namaLengkap: "Luqmanul Hakim",
+                panggilan: "Luqman",
+                ttl: "Gresik, 09 Juni 2008",
+                alamat: "Jl. Sunan Giri No. 33",
+                telepon: "0815-6655-4433",
+                email: "luqman.hakim@gmail.com",
+                sosmed: "@luqmanhakim_",
+                citaCita: "Pengusaha Halal & Filantropis",
+                hobi: "Nasyid Acapella, Traveling",
+                quote: "Setoran hafalan pagi adalah latihan mental terbaik sebelum menghadapi kerasnya dunia.",
+                fotoFormal: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=500&q=80"
+            },
+            {
+                id: "def_siswa_12",
+                kelas: "XII Keagamaan",
+                namaLengkap: "Zainab Mumtazah",
+                panggilan: "Zainab",
+                ttl: "Padang, 25 Maret 2008",
+                alamat: "Komp. Bukit Indah Blok A2",
+                telepon: "0853-2211-0099",
+                email: "zainab.mumtazah@gmail.com",
+                sosmed: "@zainab.mmtz",
+                citaCita: "Penulis Buku Sastra Islami",
+                hobi: "Membaca Novel, Kaligrafi Kontemporer",
+                quote: "Tinta pena para penuntut ilmu lebih mulia daripada sekadar kenangan biasa.",
+                fotoFormal: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=500&q=80",
+                fotoKasual: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80"
+            }
+        ];
+
+        const defaultGaleri = [
+            {
+                id: "def_galeri_1",
+                judul: "Perkemahan Jumat-Sabtu-Minggu (Perjusami)",
+                kategori: "Ekstrakurikuler Pramuka",
+                deskripsi: "Momen api unggun dan pentas seni malam keakraban di Bumi Perkemahan Ranca Upas.",
+                foto: "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "def_galeri_2",
+                judul: "Studi Wisata & Ziarah Wali",
+                kategori: "Kunjungan Edukasi",
+                deskripsi: "Perjalanan penuh makna mengunjungi kampus impian dan ziarah sejarah Islam Nusantara.",
+                foto: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "def_galeri_3",
+                judul: "Praktikum Kimia & Biologi XII IPA",
+                kategori: "Momen Belajar",
+                deskripsi: "Keseruan uji reaksi larutan di laboratorium madrasah menjelang ujian praktik akhir.",
+                foto: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "def_galeri_4",
+                judul: "Bahtsul Masail & Muhadharah Kubro",
+                kategori: "Program Keagamaan",
+                deskripsi: "Penampilan pidato 3 bahasa dan diskusi kitab kuning oleh siswa kelas XII Keagamaan.",
+                foto: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "def_galeri_5",
+                judul: "Haflah Akhirussanah & Pentas Seni",
+                kategori: "Acara Tahunan",
+                deskripsi: "Penampilan tim hadrah kolaborasi kelas XII IPA dan Keagamaan memukau para tamu.",
+                foto: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80"
+            },
+            {
+                id: "def_galeri_6",
+                judul: "Foto Studio Angkatan 2026",
+                kategori: "Dokumentasi Resmi",
+                deskripsi: "Kebersamaan penuh tawa saat sesi pemotretan buku tahunan di aula utama madrasah.",
+                foto: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80"
+            }
+        ];
+
+        const defaultAwards = [
+            {
+                id: "def_award_1",
+                kategori: "Siswa Paling Rajin & Teladan",
+                pemenang: "Aisyah Putri Ramadhani (XII IPA)",
+                ikon: "fa-medal",
+                alasan: "Catatan paling rapi se-angkatan dan tidak pernah telat masuk gerbang madrasah."
+            },
+            {
+                id: "def_award_2",
+                kategori: "Sang Hafidz & Qari Inspiratif",
+                pemenang: "Ahmad Syauqi Mubarak (XII Keagamaan)",
+                ikon: "fa-book-quran",
+                alasan: "Suara merdunya selalu menenangkan hati saat menjadi imam shalat Dzuhur berjamaah."
+            },
+            {
+                id: "def_award_3",
+                kategori: "Siswa Terlucu & Pencair Suasana",
+                pemenang: "Rizky Pratama Nugraha (XII IPA)",
+                ikon: "fa-face-laugh-beam",
+                alasan: "Selalu punya jokes spontan bahkan di tengah tegangnya ujian matematika peminatan."
+            },
+            {
+                id: "def_award_4",
+                kategori: "Orator & Debater Terbaik",
+                pemenang: "Fatimah Az-Zahra (XII Keagamaan)",
+                ikon: "fa-microphone-lines",
+                alasan: "Argumennya tajam dalam bahasa Arab, Inggris, maupun Indonesia."
+            },
+            {
+                id: "def_award_5",
+                kategori: "Duo Sahabat Paling Kompak",
+                pemenang: "Zaki (IPA) & Luqman (Keagamaan)",
+                ikon: "fa-handshake",
+                alasan: "Bukti nyata solidaritas tanpa batas jurusan, selalu bareng saat kepanitiaan OSIS."
+            },
+            {
+                id: "def_award_6",
+                kategori: "Desainer & Seniman Angkatan",
+                pemenang: "Nabila Zahra (XII IPA) & Zainab (Keagamaan)",
+                ikon: "fa-paintbrush",
+                alasan: "Otak kreatif di balik dekorasi mading dan desain baju angkatan kita!"
+            }
+        ];
+
+        const defaultAutographs = [
+            {
+                id: "def_auto_1",
+                nama: "Zaki Al-Ghifari (XII IPA)",
+                pesan: "Sukses terus buat kita semua! Jangan lupa kalau udah jadi orang sukses, tetap kumpul pas reuni akbar MA Al Fattah!",
+                waktu: "16 Nov 2026",
+                ttdText: "Zaki.G",
+                createdAt: 1700000001000
+            },
+            {
+                id: "def_auto_2",
+                nama: "Fatimah Az-Zahra (XII Keagamaan)",
+                pesan: "Barakallahu fiikum teman-teman seperjuangan. Terima kasih sudah menjadi keluarga kedua selama 3 tahun di madrasah tercinta.",
+                waktu: "16 Nov 2026",
+                ttdText: "Zahra~",
+                createdAt: 1700000000000
+            }
+        ];
+
+        // State sinkronisasi data dari Google Apps Script
+        let cloudPembukaOverrides = {};
+        let cloudGuruList = [];
+        let cloudSiswaList = [];
+        let cloudGaleriList = [];
+        let cloudAwardsList = [];
+        let cloudAutographList = [];
+        let deletedItemIds = new Set();
+
+        let dataPembuka = JSON.parse(JSON.stringify(defaultPembuka));
+        let dataGuru = [...defaultGuru];
+        let dataSiswa = [...defaultSiswa];
+        let dataGaleri = [...defaultGaleri];
+        let dataAwards = [...defaultAwards];
+        let dataAutograph = [...defaultAutographs];
+
+        function rebuildMergedLists() {
+            dataPembuka = JSON.parse(JSON.stringify(defaultPembuka));
+            if (cloudPembukaOverrides.hero) Object.assign(dataPembuka, cloudPembukaOverrides.hero);
+            if (cloudPembukaOverrides.tema) Object.assign(dataPembuka, cloudPembukaOverrides.tema);
+            ['kepala', 'wali_ipa', 'wali_agama'].forEach(key => {
+                if (cloudPembukaOverrides[`sambutan_${key}`]) {
+                    Object.assign(dataPembuka.sambutan[key], cloudPembukaOverrides[`sambutan_${key}`]);
+                }
+            });
+
+            const mergeCollection = (defaults, cloudItems) => {
+                const cloudMap = new Map();
+                const newItems = [];
+
+                cloudItems.forEach(item => {
+                    if (item.targetId) {
+                        cloudMap.set(item.targetId, item);
+                    } else {
+                        newItems.push(item);
+                    }
+                });
+
+                const mergedDefaults = defaults
+                    .filter(d => !deletedItemIds.has(d.id))
+                    .map(d => cloudMap.has(d.id) ? { ...d, ...cloudMap.get(d.id) } : d);
+
+                const activeNewItems = newItems.filter(n => !deletedItemIds.has(n.docId || n.id));
+                activeNewItems.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                return [...activeNewItems, ...mergedDefaults];
+            };
+
+            dataGuru = mergeCollection(defaultGuru, cloudGuruList);
+            dataSiswa = mergeCollection(defaultSiswa, cloudSiswaList);
+            dataGaleri = mergeCollection(defaultGaleri, cloudGaleriList);
+            dataAwards = mergeCollection(defaultAwards, cloudAwardsList);
+            dataAutograph = mergeCollection(defaultAutographs, cloudAutographList);
+
+            renderPembuka();
+            renderGuru();
+            renderSiswa();
+            renderGaleriDanAwards();
+            renderAutographWall();
+        }
+
+        // --- KONEKSI API GOOGLE APPS SCRIPT (GET & POST) ---
+        async function fetchAllFromGas() {
+            const indicator = document.getElementById('sync-indicator');
+            const statusText = document.getElementById('sync-status-text');
+            const globalDot = document.getElementById('global-sync-dot');
+            const globalLabel = document.getElementById('global-sync-label');
+
+            if (!isApiConfigured()) {
+                if (statusText) statusText.textContent = "API_URL belum diatur • Mode Lokal";
+                if (globalDot) globalDot.className = "w-2 h-2 rounded-full bg-amber-400 mr-1.5";
+                if (globalLabel) globalLabel.textContent = "Mode Lokal";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}?t=${Date.now()}`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                const json = await response.json();
+
+                if (json.status === 'success') {
+                    cloudPembukaOverrides = json.pembuka || {};
+                    cloudGuruList = json.guru || [];
+                    cloudSiswaList = json.siswa || [];
+                    cloudGaleriList = json.galeri || [];
+                    cloudAwardsList = json.awards || [];
+                    cloudAutographList = json.autographs || [];
+                    deletedItemIds = new Set(json.deleted || []);
+
+                    rebuildMergedLists();
+
+                    if (indicator) indicator.className = "w-2 h-2 rounded-full bg-emerald-500 mr-2";
+                    if (statusText) statusText.textContent = "Terhubung Google Sheets";
+                    if (globalDot) globalDot.className = "w-2 h-2 rounded-full bg-emerald-500 mr-1.5";
+                    if (globalLabel) globalLabel.textContent = "Online • Sheets";
+                } else {
+                    throw new Error(json.message || 'Gagal memuat data');
+                }
+            } catch (err) {
+                console.error("Error fetch GAS:", err);
+                if (statusText) statusText.textContent = "Gagal terhubung ke Sheets";
+                if (globalDot) globalDot.className = "w-2 h-2 rounded-full bg-rose-500 mr-1.5";
+                if (globalLabel) globalLabel.textContent = "Offline";
+            }
+        }
+
+        async function postToGas(bodyObj) {
+            if (!isApiConfigured()) {
+                return { status: 'local' };
+            }
+            // Menggunakan text/plain agar terhindar dari preflight CORS OPTIONS di Google Apps Script
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                redirect: 'follow',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(bodyObj)
+            });
+            return await response.json();
+        }
+
+        // --- PENGATURAN API_URL ---
+        window.openApiConfigModal = function() {
+            document.getElementById('input-api-url').value = isApiConfigured() ? API_URL : '';
+            document.getElementById('modal-api-config').classList.remove('hidden');
+        }
+        window.closeApiConfigModal = function() {
+            document.getElementById('modal-api-config').classList.add('hidden');
+        }
+        window.saveCustomApiUrl = function() {
+            const val = document.getElementById('input-api-url').value.trim();
+            if (!val.startsWith('https://script.google.com/')) {
+                showToast("URL tidak valid. Harus diawali https://script.google.com/", true);
+                return;
+            }
+            API_URL = val;
+            sessionStorage.setItem('ma_alfattah_api_url', val);
+            closeApiConfigModal();
+            showToast("API_URL disimpan, memuat data dari Google Sheets...");
+            fetchAllFromGas();
+        }
+
+        // --- RENDER HALAMAN PEMBUKA ---
+        function renderPembuka() {
+            document.getElementById('hero-badge-text').textContent = dataPembuka.heroBadge;
+            document.getElementById('hero-title-text').textContent = dataPembuka.heroTitle;
+            document.getElementById('hero-desc-text').textContent = dataPembuka.heroDesc;
+
+            document.getElementById('tema-judul-text').textContent = dataPembuka.temaJudul;
+            document.getElementById('tema-p1-text').textContent = dataPembuka.temaP1;
+            document.getElementById('tema-p2-text').textContent = dataPembuka.temaP2;
+
+            ['kepala', 'wali_ipa', 'wali_agama'].forEach(key => {
+                const s = dataPembuka.sambutan[key];
+                const elFoto = document.getElementById(`sambutan-${key}-foto`);
+                const elJabatan = document.getElementById(`sambutan-${key}-jabatan`);
+                const elNama = document.getElementById(`sambutan-${key}-nama`);
+                const elIsi = document.getElementById(`sambutan-${key}-isi`);
+                if (elFoto) elFoto.src = s.foto;
+                if (elJabatan) elJabatan.textContent = s.jabatan;
+                if (elNama) elNama.textContent = s.nama;
+                if (elIsi) elIsi.textContent = s.isi;
+            });
+        }
+
+        // --- MODAL FORM INPUT & EDIT ADMIN ---
+        window.openAdminForm = function(type, itemId = null) {
+            if (!isAdmin) return;
+            const container = document.getElementById('admin-form-container');
+            
+            let existing = null;
+            if (itemId) {
+                if (type === 'guru') existing = dataGuru.find(x => (x.docId || x.id) === itemId);
+                if (type === 'siswa') existing = dataSiswa.find(x => (x.docId || x.id) === itemId);
+                if (type === 'galeri') existing = dataGaleri.find(x => (x.docId || x.id) === itemId);
+                if (type === 'awards') existing = dataAwards.find(x => (x.docId || x.id) === itemId);
+                if (type === 'sambutan') existing = dataPembuka.sambutan[itemId];
+            }
+            editingItem = (existing || type.startsWith('pembuka_')) ? { type, item: existing, subKey: itemId } : null;
+            const isEdit = Boolean(existing);
+
+            if (type === 'pembuka_hero') {
+                container.innerHTML = `
+                    <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">Edit Teks Sampul Pembuka</h3>
+                    <p class="text-xs text-slate-500 mb-4">Perbarui label edisi, judul utama, atau deskripsi pembuka buku tahunan.</p>
+                    <form onsubmit="handleAdminSubmit(event, 'pembuka_hero')" class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Label Edisi *</label>
+                            <input type="text" id="adm-hero-badge" required value="${escapeHtml(dataPembuka.heroBadge)}" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Judul Utama Hero *</label>
+                            <input type="text" id="adm-hero-title" required value="${escapeHtml(dataPembuka.heroTitle)}" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Pembuka *</label>
+                            <textarea id="adm-hero-desc" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300">${escapeHtml(dataPembuka.heroDesc)}</textarea>
+                        </div>
+                        <button type="submit" id="btn-adm-save" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm transition">
+                            Simpan Perubahan Pembuka
+                        </button>
+                    </form>
+                `;
+            } else if (type === 'pembuka_tema') {
+                container.innerHTML = `
+                    <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">Edit Konsep & Filosofi Tema</h3>
+                    <p class="text-xs text-slate-500 mb-4">Perbarui judul tema dan deskripsi filosofi angkatan.</p>
+                    <form onsubmit="handleAdminSubmit(event, 'pembuka_tema')" class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Judul Tema *</label>
+                            <input type="text" id="adm-tema-judul" required value="${escapeHtml(dataPembuka.temaJudul)}" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Paragraf Pertama *</label>
+                            <textarea id="adm-tema-p1" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300">${escapeHtml(dataPembuka.temaP1)}</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Paragraf Kedua *</label>
+                            <textarea id="adm-tema-p2" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300">${escapeHtml(dataPembuka.temaP2)}</textarea>
+                        </div>
+                        <button type="submit" id="btn-adm-save" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm transition">
+                            Simpan Perubahan Tema
+                        </button>
+                    </form>
+                `;
+            } else if (type === 'sambutan' && existing) {
+                container.innerHTML = `
+                    <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">Edit Sambutan & Foto</h3>
+                    <p class="text-xs text-slate-500 mb-4">Perbarui nama, jabatan, foto profil, atau isi sambutan.</p>
+                    <form onsubmit="handleAdminSubmit(event, 'sambutan')" class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Jabatan *</label>
+                            <input type="text" id="adm-sambutan-jabatan" required value="${escapeHtml(existing.jabatan)}" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap & Gelar *</label>
+                            <input type="text" id="adm-sambutan-nama" required value="${escapeHtml(existing.nama)}" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Ganti Foto (Kosongkan jika tetap)</label>
+                            <input type="file" id="adm-sambutan-file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-800">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Isi Sambutan *</label>
+                            <textarea id="adm-sambutan-isi" rows="4" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300">${escapeHtml(existing.isi)}</textarea>
+                        </div>
+                        <button type="submit" id="btn-adm-save" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm transition">
+                            Simpan Perubahan Sambutan
+                        </button>
+                    </form>
+                `;
+            } else if (type === 'guru') {
+                container.innerHTML = `
+                    <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">${isEdit ? 'Edit Profil Guru / Staf' : 'Tambah Profil Guru / Staf'}</h3>
+                    <p class="text-xs text-slate-500 mb-4">${isEdit ? 'Perbarui informasi atau unggah foto baru jika diperlukan.' : 'Data dan foto akan langsung tampil di halaman Dewan Guru.'}</p>
+                    <form onsubmit="handleAdminSubmit(event, 'guru')" class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap & Gelar *</label>
+                            <input type="text" id="adm-guru-nama" required value="${isEdit ? escapeHtml(existing.nama) : ''}" placeholder="Contoh: Drs. H. Abdul Malik, M.Pd" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Jabatan / Mata Pelajaran *</label>
+                            <input type="text" id="adm-guru-jabatan" required value="${isEdit ? escapeHtml(existing.jabatan) : ''}" placeholder="Contoh: Guru Matematika Peminatan" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">${isEdit ? 'Ganti Foto Profil (Kosongkan jika tetap)' : 'Upload Foto Profil (JPG/PNG)'}</label>
+                            <input type="file" id="adm-guru-file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-800 hover:file:bg-emerald-100">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Pesan Kesan / Kutipan Ikonik *</label>
+                            <textarea id="adm-guru-quote" rows="2" required placeholder="Tuliskan nasihat yang sering diucapkan di kelas..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300">${isEdit ? escapeHtml(existing.quote) : ''}</textarea>
+                        </div>
+                        <button type="submit" id="btn-adm-save" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm transition mt-2">
+                            ${isEdit ? 'Simpan Perubahan Guru' : 'Simpan Data Guru'}
+                        </button>
+                    </form>
+                `;
+            } else if (type === 'siswa') {
+                container.innerHTML = `
+                    <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">${isEdit ? 'Edit Biodata Siswa' : 'Tambah Biodata Siswa Kelas XII'}</h3>
+                    <p class="text-xs text-slate-500 mb-4">${isEdit ? 'Perbarui data siswa atau ganti foto formal/kasual.' : 'Input identitas lengkap beserta foto formal & kasual siswa.'}</p>
+                    <form onsubmit="handleAdminSubmit(event, 'siswa')" class="space-y-3 text-sm max-h-[70vh] overflow-y-auto pr-1">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Program Kelas *</label>
+                                <select id="adm-siswa-kelas" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white">
+                                    <option value="XII IPA" ${isEdit && existing.kelas === 'XII IPA' ? 'selected' : ''}>XII IPA</option>
+                                    <option value="XII Keagamaan" ${isEdit && existing.kelas === 'XII Keagamaan' ? 'selected' : ''}>XII Keagamaan</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Panggilan *</label>
+                                <input type="text" id="adm-siswa-panggilan" required value="${isEdit ? escapeHtml(existing.panggilan) : ''}" placeholder="Contoh: Zaki" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap *</label>
+                            <input type="text" id="adm-siswa-nama" required value="${isEdit ? escapeHtml(existing.namaLengkap) : ''}" placeholder="Contoh: Muhammad Zaki Al-Ghifari" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Tempat, Tanggal Lahir *</label>
+                                <input type="text" id="adm-siswa-ttl" required value="${isEdit ? escapeHtml(existing.ttl) : ''}" placeholder="Bandung, 14 Mei 2008" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">No. HP / WhatsApp</label>
+                                <input type="text" id="adm-siswa-telp" value="${isEdit ? escapeHtml(existing.telepon) : ''}" placeholder="0812-xxxx-xxxx" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Rumah *</label>
+                            <input type="text" id="adm-siswa-alamat" required value="${isEdit ? escapeHtml(existing.alamat) : ''}" placeholder="Jl. Melati Indah No. 12" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Akun Instagram / TikTok</label>
+                                <input type="text" id="adm-siswa-sosmed" value="${isEdit ? escapeHtml(existing.sosmed) : ''}" placeholder="@username" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Email</label>
+                                <input type="email" id="adm-siswa-email" value="${isEdit ? escapeHtml(existing.email) : ''}" placeholder="nama@gmail.com" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Cita-Cita *</label>
+                                <input type="text" id="adm-siswa-cita" required value="${isEdit ? escapeHtml(existing.citaCita) : ''}" placeholder="Dokter / Dosen Tafsir" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Hobi & Minat *</label>
+                                <input type="text" id="adm-siswa-hobi" required value="${isEdit ? escapeHtml(existing.hobi) : ''}" placeholder="Futsal, Kaligrafi" class="w-full px-3 py-2 rounded-xl border border-slate-300">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                            <div>
+                                <label class="block text-xs font-bold text-emerald-800 mb-1">${isEdit ? 'Ganti Foto Formal (Opsional)' : 'Foto Formal (Seragam)'}</label>
+                                <input type="file" id="adm-siswa-foto-formal" accept="image/*" class="w-full text-xs text-slate-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-amber-700 mb-1">${isEdit ? 'Ganti Foto Kasual (Opsional)' : 'Foto Kasual (Tema)'}</label>
+                                <input type="file" id="adm-siswa-foto-kasual" accept="image/*" class="w-full text-xs text-slate-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Kutipan Pribadi (Quotes) *</label>
+                            <textarea id="adm-siswa-quote" rows="2" required placeholder="Pesan perpisahan atau motto hidup siswa..." class="w-full px-3 py-2 rounded-xl border border-slate-300">${isEdit ? escapeHtml(existing.quote) : ''}</textarea>
+                        </div>
+                        <button type="submit" id="btn-adm-save" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm transition">
+                            ${isEdit ? 'Simpan Perubahan Siswa' : 'Simpan Biodata Siswa'}
+                        </button>
+                    </form>
+                `;
+            } else if (type === 'galeri') {
+                container.innerHTML = `
+                    <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">${isEdit ? 'Edit Foto Kilas Balik' : 'Upload Foto Kilas Balik'}</h3>
+                    <p class="text-xs text-slate-500 mb-4">${isEdit ? 'Perbarui judul, kategori, atau ganti foto kegiatan.' : 'Tambahkan dokumentasi kegiatan sekolah ke galeri kenangan.'}</p>
+                    <form onsubmit="handleAdminSubmit(event, 'galeri')" class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Judul Momen / Kegiatan *</label>
+                            <input type="text" id="adm-galeri-judul" required value="${isEdit ? escapeHtml(existing.judul) : ''}" placeholder="Contoh: Wisuda Tahfidz Angkatan 2026" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Acara *</label>
+                            <input type="text" id="adm-galeri-kategori" required value="${isEdit ? escapeHtml(existing.kategori) : ''}" placeholder="Contoh: Program Keagamaan / Pentas Seni" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">${isEdit ? 'Ganti File Foto (Kosongkan jika tetap)' : 'Pilih File Foto Kegiatan *'}</label>
+                            <input type="file" id="adm-galeri-file" accept="image/*" ${isEdit ? '' : 'required'} class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-800">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Singkat *</label>
+                            <textarea id="adm-galeri-desc" rows="2" required placeholder="Ceritakan keseruan momen di foto ini..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300">${isEdit ? escapeHtml(existing.deskripsi) : ''}</textarea>
+                        </div>
+                        <button type="submit" id="btn-adm-save" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm transition">
+                            ${isEdit ? 'Simpan Perubahan Galeri' : 'Upload ke Galeri Kenangan'}
+                        </button>
+                    </form>
+                `;
+            } else if (type === 'awards') {
+                container.innerHTML = `
+                    <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">${isEdit ? 'Edit Nominasi Award' : 'Tambah Nominasi Award'}</h3>
+                    <p class="text-xs text-slate-500 mb-4">${isEdit ? 'Perbarui kategori atau pemenang penghargaan.' : 'Tambahkan kategori penghargaan unik versi siswa.'}</p>
+                    <form onsubmit="handleAdminSubmit(event, 'awards')" class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Kategori Penghargaan *</label>
+                            <input type="text" id="adm-award-kategori" required value="${isEdit ? escapeHtml(existing.kategori) : ''}" placeholder="Contoh: Siswa Paling Estetik" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Pemenang & Kelas *</label>
+                            <input type="text" id="adm-award-pemenang" required value="${isEdit ? escapeHtml(existing.pemenang) : ''}" placeholder="Contoh: Nabila Zahra (XII IPA)" class="w-full px-3.5 py-2 rounded-xl border border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Alasan / Deskripsi Singkat *</label>
+                            <textarea id="adm-award-alasan" rows="2" required placeholder="Mengapa terpilih untuk kategori ini..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300">${isEdit ? escapeHtml(existing.alasan) : ''}</textarea>
+                        </div>
+                        <button type="submit" id="btn-adm-save" class="w-full py-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-sm transition">
+                            ${isEdit ? 'Simpan Perubahan Award' : 'Simpan Nominasi Award'}
+                        </button>
+                    </form>
+                `;
+            }
+
+            document.getElementById('modal-admin-form').classList.remove('hidden');
+        }
+
+        window.closeAdminForm = function() {
+            editingItem = null;
+            document.getElementById('modal-admin-form').classList.add('hidden');
+        }
+
+        // --- PROSES SIMPAN / UPDATE DATA ADMIN KE GOOGLE APPS SCRIPT ---
+        window.handleAdminSubmit = async function(e, type) {
+            e.preventDefault();
+            if (!isAdmin) return;
+
+            const btnSave = document.getElementById('btn-adm-save');
+            btnSave.disabled = true;
+            btnSave.textContent = "Menyimpan ke Google Sheets...";
+
+            const isEdit = Boolean(editingItem && editingItem.item);
+            const prev = isEdit ? editingItem.item : {};
+            const subKey = editingItem ? editingItem.subKey : null;
+
+            try {
+                if (type === 'pembuka_hero' || type === 'pembuka_tema' || type === 'sambutan') {
+                    let docKey = "";
+                    let dataObj = {};
+
+                    if (type === 'pembuka_hero') {
+                        docKey = "hero";
+                        dataObj = {
+                            heroBadge: document.getElementById('adm-hero-badge').value.trim(),
+                            heroTitle: document.getElementById('adm-hero-title').value.trim(),
+                            heroDesc: document.getElementById('adm-hero-desc').value.trim(),
+                        };
+                    } else if (type === 'pembuka_tema') {
+                        docKey = "tema";
+                        dataObj = {
+                            temaJudul: document.getElementById('adm-tema-judul').value.trim(),
+                            temaP1: document.getElementById('adm-tema-p1').value.trim(),
+                            temaP2: document.getElementById('adm-tema-p2').value.trim(),
+                        };
+                    } else if (type === 'sambutan') {
+                        docKey = `sambutan_${subKey}`;
+                        const file = document.getElementById('adm-sambutan-file').files[0];
+                        const imgBase64 = await compressImageFile(file, 360, 0.7);
+                        dataObj = {
+                            jabatan: document.getElementById('adm-sambutan-jabatan').value.trim(),
+                            nama: document.getElementById('adm-sambutan-nama').value.trim(),
+                            isi: document.getElementById('adm-sambutan-isi').value.trim(),
+                            foto: imgBase64 || prev.foto
+                        };
+                    }
+
+                    await postToGas({
+                        action: 'upsert',
+                        collection: 'yearbook_pembuka',
+                        id: docKey,
+                        payload: dataObj
+                    });
+
+                    cloudPembukaOverrides[docKey] = dataObj;
+                    rebuildMergedLists();
+                    showToast("Perubahan halaman pembuka berhasil disimpan!");
+                    closeAdminForm();
+                    return;
+                }
+
+                let collectionName = "";
+                const recordId = (isEdit && prev.docId) ? prev.docId : ('rec_' + Date.now());
+                let payload = {
+                    createdAt: prev.createdAt || Date.now(),
+                    updatedAt: Date.now(),
+                    isCustom: true
+                };
+
+                if (isEdit && !prev.docId && prev.id) {
+                    payload.targetId = prev.id;
+                    payload.id = prev.id;
+                }
+
+                if (type === 'guru') {
+                    collectionName = "yearbook_guru";
+                    const file = document.getElementById('adm-guru-file').files[0];
+                    const imgBase64 = await compressImageFile(file, 360, 0.7);
+                    payload = {
+                        ...payload,
+                        nama: document.getElementById('adm-guru-nama').value.trim(),
+                        jabatan: document.getElementById('adm-guru-jabatan').value.trim(),
+                        quote: document.getElementById('adm-guru-quote').value.trim(),
+                        foto: imgBase64 || prev.foto || "https://placehold.co/300x300/064e3b/fbbf24?text=Guru"
+                    };
+                } else if (type === 'siswa') {
+                    collectionName = "yearbook_siswa";
+                    const fileFormal = document.getElementById('adm-siswa-foto-formal').files[0];
+                    const fileKasual = document.getElementById('adm-siswa-foto-kasual').files[0];
+                    const imgFormal = await compressImageFile(fileFormal, 400, 0.7);
+                    const imgKasual = await compressImageFile(fileKasual, 400, 0.7);
+                    const panggilan = document.getElementById('adm-siswa-panggilan').value.trim();
+
+                    payload = {
+                        ...payload,
+                        id: prev.id || recordId,
+                        kelas: document.getElementById('adm-siswa-kelas').value,
+                        namaLengkap: document.getElementById('adm-siswa-nama').value.trim(),
+                        panggilan: panggilan,
+                        ttl: document.getElementById('adm-siswa-ttl').value.trim(),
+                        alamat: document.getElementById('adm-siswa-alamat').value.trim(),
+                        telepon: document.getElementById('adm-siswa-telp').value.trim() || "-",
+                        email: document.getElementById('adm-siswa-email').value.trim() || "-",
+                        sosmed: document.getElementById('adm-siswa-sosmed').value.trim() || "-",
+                        citaCita: document.getElementById('adm-siswa-cita').value.trim(),
+                        hobi: document.getElementById('adm-siswa-hobi').value.trim(),
+                        quote: document.getElementById('adm-siswa-quote').value.trim(),
+                        fotoFormal: imgFormal || prev.fotoFormal || `https://placehold.co/400x500/064e3b/ffffff?text=${encodeURIComponent(panggilan)}`,
+                        fotoKasual: imgKasual || prev.fotoKasual || imgFormal || `https://placehold.co/400x500/d97706/ffffff?text=${encodeURIComponent(panggilan)}`
+                    };
+                } else if (type === 'galeri') {
+                    collectionName = "yearbook_galeri";
+                    const file = document.getElementById('adm-galeri-file').files[0];
+                    const imgGaleri = await compressImageFile(file, 600, 0.7);
+                    payload = {
+                        ...payload,
+                        judul: document.getElementById('adm-galeri-judul').value.trim(),
+                        kategori: document.getElementById('adm-galeri-kategori').value.trim(),
+                        deskripsi: document.getElementById('adm-galeri-desc').value.trim(),
+                        foto: imgGaleri || prev.foto || "https://placehold.co/600x400/064e3b/ffffff?text=Kegiatan"
+                    };
+                } else if (type === 'awards') {
+                    collectionName = "yearbook_awards";
+                    payload = {
+                        ...payload,
+                        kategori: document.getElementById('adm-award-kategori').value.trim(),
+                        pemenang: document.getElementById('adm-award-pemenang').value.trim(),
+                        alasan: document.getElementById('adm-award-alasan').value.trim(),
+                        ikon: prev.ikon || "fa-award"
+                    };
+                }
+
+                await postToGas({
+                    action: 'upsert',
+                    collection: collectionName,
+                    id: recordId,
+                    payload: payload
+                });
+
+                const savedObj = { ...payload, docId: recordId };
+                const updateLocalList = (list) => {
+                    const idx = list.findIndex(x => x.docId === recordId || (payload.targetId && x.targetId === payload.targetId));
+                    if (idx >= 0) list[idx] = savedObj;
+                    else list.unshift(savedObj);
+                };
+
+                if (type === 'guru') updateLocalList(cloudGuruList);
+                if (type === 'siswa') updateLocalList(cloudSiswaList);
+                if (type === 'galeri') updateLocalList(cloudGaleriList);
+                if (type === 'awards') updateLocalList(cloudAwardsList);
+
+                rebuildMergedLists();
+                showToast(isEdit ? "Perubahan berhasil disimpan ke Google Sheets!" : "Data baru berhasil disimpan!");
+
+                if (type === 'siswa' && activeModalSiswaId) {
+                    renderModalSiswaContent(recordId);
+                }
+
+                closeAdminForm();
+            } catch (err) {
+                console.error("Error simpan data admin:", err);
+                showToast("Gagal menyimpan ke Google Sheets. Periksa koneksi / API_URL.", true);
+                btnSave.disabled = false;
+                btnSave.textContent = "Coba Simpan Lagi";
+            }
+        }
+
+        // --- KONFIRMASI & HAPUS DATA (KHUSUS ADMIN) ---
+        window.promptDeleteAdminItem = function(event, collectionName, itemId, docId = '', label = '') {
+            event.stopPropagation();
+            if (!isAdmin) return;
+            pendingDelete = { collectionName, itemId, docId };
+            document.getElementById('delete-confirm-text').textContent = label
+                ? `Anda yakin ingin menghapus "${label}" dari buku tahunan?`
+                : 'Data yang dihapus akan hilang dari tampilan buku tahunan.';
+            document.getElementById('modal-admin-delete').classList.remove('hidden');
+        }
+
+        window.closeDeleteModal = function() {
+            pendingDelete = null;
+            document.getElementById('modal-admin-delete').classList.add('hidden');
+        }
+
+        document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+            if (!isAdmin || !pendingDelete) return;
+            const { collectionName, itemId, docId } = pendingDelete;
+            closeDeleteModal();
+
+            const targetDocId = docId || itemId;
+            const baseId = itemId || docId;
+
+            try {
+                await postToGas({
+                    action: 'delete',
+                    collection: collectionName,
+                    id: targetDocId,
+                    baseId: baseId
+                });
+
+                deletedItemIds.add(baseId);
+                if (docId) deletedItemIds.add(docId);
+                rebuildMergedLists();
+                showToast("Data berhasil dihapus dari Google Sheets.");
+            } catch (err) {
+                console.error("Gagal menghapus:", err);
+                showToast("Gagal menghapus data di server.", true);
+            }
+        });
+
+        // --- MODAL LOGIN ADMIN ---
+        window.toggleAdminModal = function() {
+            if (isAdmin) {
+                showToast("Anda sedang berada dalam Mode Admin.");
+                return;
+            }
+            document.getElementById('modal-admin-login').classList.remove('hidden');
+            setTimeout(() => document.getElementById('input-admin-pin').focus(), 50);
+        }
+
+        window.closeAdminLogin = function() {
+            document.getElementById('modal-admin-login').classList.add('hidden');
+            document.getElementById('input-admin-pin').value = '';
+        }
+
+        window.verifyAdminPin = function() {
+            const inputPin = document.getElementById('input-admin-pin').value.trim();
+            if (inputPin === ADMIN_PIN) {
+                isAdmin = true;
+                document.getElementById('modal-admin-login').classList.add('hidden');
+                document.getElementById('input-admin-pin').value = '';
+                document.getElementById('admin-banner').classList.remove('hidden');
+                document.getElementById('icon-admin-header').className = "fa-solid fa-lock-open text-amber-500";
+                document.getElementById('text-admin-header').textContent = "Admin Aktif";
+                document.getElementById('btn-admin-header').className = "px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300 transition flex items-center space-x-1.5 cursor-pointer";
+                
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                
+                showToast("Berhasil masuk sebagai Admin Panitia!");
+                renderGuru();
+                renderSiswa();
+                renderGaleriDanAwards();
+                renderAutographWall();
+            } else {
+                showToast("PIN Admin salah! Coba lagi (Default: 2026)", true);
+            }
+        }
+
+        window.logoutAdmin = function() {
+            isAdmin = false;
+            document.getElementById('admin-banner').classList.add('hidden');
+            document.getElementById('icon-admin-header').className = "fa-solid fa-lock text-slate-500";
+            document.getElementById('text-admin-header').textContent = "Mode Admin";
+            document.getElementById('btn-admin-header').className = "px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition flex items-center space-x-1.5 cursor-pointer";
+            
+            document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+            showToast("Keluar dari Mode Admin.");
+            renderGuru();
+            renderSiswa();
+            renderGaleriDanAwards();
+            renderAutographWall();
+        }
+
+        // --- KOMPRESI GAMBAR (DIOPTIMALKAN AGAR MUAT DI SEL GOOGLE SHEETS < 45KB) ---
+        async function compressImageFile(file, maxWidth = 400, quality = 0.68) {
+            if (!file) return null;
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        let dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        // Pastikan panjang string Base64 aman di bawah batas 50.000 karakter sel Google Sheets
+                        if (dataUrl.length > 46000) {
+                            dataUrl = canvas.toDataURL('image/jpeg', 0.45);
+                        }
+                        resolve(dataUrl);
+                    };
+                    img.onerror = () => resolve(null);
+                };
+                reader.onerror = () => resolve(null);
+            });
+        }
+
+        // --- NAVIGASI TAB ---
+        window.switchTab = function(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
+            const targetSec = document.getElementById(`sec-${tabName}`);
+            if (targetSec) targetSec.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-800', 'text-white', 'shadow-sm');
+                btn.classList.add('text-slate-600');
+            });
+            const activeDesk = document.getElementById(`nav-${tabName}`);
+            if (activeDesk) {
+                activeDesk.classList.remove('text-slate-600');
+                activeDesk.classList.add('bg-emerald-800', 'text-white', 'shadow-sm');
+            }
+
+            document.querySelectorAll('.mob-nav-btn').forEach(btn => {
+                btn.classList.remove('text-emerald-800', 'font-bold');
+                btn.classList.add('text-slate-500', 'font-medium');
+            });
+            const activeMob = document.getElementById(`mob-${tabName}`);
+            if (activeMob) {
+                activeMob.classList.remove('text-slate-500', 'font-medium');
+                activeMob.classList.add('text-emerald-800', 'font-bold');
+            }
+
+            if (tabName === 'galeri') {
+                setTimeout(resizeSignatureCanvas, 50);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- RENDER DATA GURU ---
+        function renderGuru() {
+            const container = document.getElementById('grid-guru');
+            container.innerHTML = dataGuru.map(guru => {
+                const itemKey = guru.docId || guru.id;
+                return `
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between group relative">
+                    ${isAdmin ? `
+                        <div class="absolute top-4 right-4 flex items-center space-x-1.5 z-10">
+                            <button type="button" onclick="openAdminForm('guru', '${itemKey}')" title="Edit Data Guru" class="w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center text-xs transition shadow-md cursor-pointer">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button type="button" onclick="promptDeleteAdminItem(event, 'yearbook_guru', '${guru.id || ''}', '${guru.docId || ''}', '${escapeHtml(guru.nama)}')" title="Hapus Data Guru" class="w-8 h-8 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-xs transition shadow-md cursor-pointer">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                    <div>
+                        <div class="flex items-center space-x-4 mb-4">
+                            <img src="${guru.foto}" alt="${escapeHtml(guru.nama)}" class="w-16 h-20 sm:w-20 sm:h-24 rounded-2xl object-cover object-top border-2 border-emerald-700/30 group-hover:border-amber-500 transition flex-shrink-0" onerror="this.src='https://placehold.co/200x200/064e3b/ffffff?text=Guru'">
+                            <div class="${isAdmin ? 'pr-20' : 'pr-4'}">
+                                <h3 class="font-serif font-bold text-base sm:text-lg text-slate-900 leading-snug">${escapeHtml(guru.nama)}</h3>
+                                <span class="inline-block mt-1 px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-semibold border border-emerald-200">
+                                    ${escapeHtml(guru.jabatan)}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50/70 rounded-2xl p-4 border border-amber-200/60 relative">
+                            <i class="fa-solid fa-quote-left text-amber-400/50 text-xl absolute top-3 left-3"></i>
+                            <p class="text-slate-700 text-xs sm:text-sm italic pl-5 leading-relaxed">
+                                "${escapeHtml(guru.quote)}"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // --- FILTER, PENCARIAN & MODE FOTO SISWA ---
+        window.filterSiswa = function(kelas) {
+            currentKelasFilter = kelas;
+            const buttons = {
+                'ALL': document.getElementById('filter-all'),
+                'XII IPA': document.getElementById('filter-ipa'),
+                'XII Keagamaan': document.getElementById('filter-agama')
+            };
+
+            Object.entries(buttons).forEach(([key, btn]) => {
+                if (!btn) return;
+                btn.className = key === kelas
+                    ? "filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-800 text-white shadow-sm transition"
+                    : "filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition";
+            });
+            renderSiswa();
+        }
+
+        window.setPhotoMode = function(mode) {
+            currentPhotoMode = mode;
+            const btnFormal = document.getElementById('btn-mode-formal');
+            const btnKasual = document.getElementById('btn-mode-kasual');
+
+            if (mode === 'formal') {
+                btnFormal.className = "px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-white transition";
+                btnKasual.className = "px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 transition";
+            } else {
+                btnKasual.className = "px-2.5 py-1 rounded-md text-xs font-bold bg-amber-500 text-white transition";
+                btnFormal.className = "px-2.5 py-1 rounded-md text-xs font-semibold text-slate-600 transition";
+            }
+            renderSiswa();
+        }
+
+        // --- RENDER BIODATA SISWA & MODAL DETAIL ---
+        window.renderSiswa = function() {
+            const container = document.getElementById('grid-siswa');
+            const emptyState = document.getElementById('empty-siswa');
+            const query = (document.getElementById('search-siswa')?.value || '').toLowerCase().trim();
+
+            const totalAll = dataSiswa.length;
+            const totalIpa = dataSiswa.filter(s => s.kelas === 'XII IPA').length;
+            const totalAgama = dataSiswa.filter(s => s.kelas === 'XII Keagamaan').length;
+
+            const statTotal = document.getElementById('stat-total-siswa');
+            if (statTotal) statTotal.textContent = totalAll;
+            const fAll = document.getElementById('filter-all');
+            if (fAll) fAll.textContent = `Semua (${totalAll})`;
+            const fIpa = document.getElementById('filter-ipa');
+            if (fIpa) fIpa.textContent = `XII IPA (${totalIpa})`;
+            const fAgama = document.getElementById('filter-agama');
+            if (fAgama) fAgama.textContent = `XII Keagamaan (${totalAgama})`;
+
+            const filtered = dataSiswa.filter(s => {
+                const matchKelas = currentKelasFilter === 'ALL' || s.kelas === currentKelasFilter;
+                const matchQuery = !query || [
+                    s.namaLengkap, s.panggilan, s.citaCita, s.hobi, s.alamat, s.quote
+                ].some(field => (field || '').toLowerCase().includes(query));
+                return matchKelas && matchQuery;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            container.innerHTML = filtered.map(siswa => {
+                const itemKey = siswa.docId || siswa.id;
+                const photoUrl = currentPhotoMode === 'kasual' ? (siswa.fotoKasual || siswa.fotoFormal) : (siswa.fotoFormal || siswa.fotoKasual);
+                const badgeClass = siswa.kelas === 'XII IPA' 
+                    ? 'bg-blue-600/90 text-white' 
+                    : 'bg-emerald-700/90 text-white';
+
+                return `
+                <div onclick="openModalSiswa('${itemKey}')" class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group cursor-pointer relative">
+                    ${isAdmin ? `
+                        <div class="absolute top-3 right-3 z-20 flex items-center space-x-1.5" onclick="event.stopPropagation()">
+                            <button type="button" onclick="openAdminForm('siswa', '${itemKey}')" title="Edit Data Siswa" class="w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center text-xs shadow-md transition cursor-pointer">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button type="button" onclick="promptDeleteAdminItem(event, 'yearbook_siswa', '${siswa.id || ''}', '${siswa.docId || ''}', '${escapeHtml(siswa.namaLengkap)}')" title="Hapus Data Siswa" class="w-8 h-8 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-xs shadow-md transition cursor-pointer">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                    <div>
+                        <div class="relative aspect-[4/5] w-full overflow-hidden bg-slate-200">
+                            <img src="${photoUrl}" alt="${escapeHtml(siswa.namaLengkap)}" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/400x500/064e3b/ffffff?text=${encodeURIComponent(siswa.panggilan || 'Siswa')}'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-bold backdrop-blur-sm ${badgeClass}">
+                                ${escapeHtml(siswa.kelas)}
+                            </span>
+                            <div class="absolute bottom-3 left-4 right-4 text-white">
+                                <span class="text-xs font-semibold text-amber-300 block">"${escapeHtml(siswa.panggilan)}"</span>
+                                <h3 class="font-serif font-bold text-lg leading-tight line-clamp-1">${escapeHtml(siswa.namaLengkap)}</h3>
+                            </div>
+                        </div>
+                        <div class="p-5 space-y-2.5">
+                            <div class="flex items-start space-x-2 text-xs text-slate-600">
+                                <i class="fa-solid fa-graduation-cap text-emerald-700 mt-0.5 w-4"></i>
+                                <span class="line-clamp-1"><strong>Cita-cita:</strong> ${escapeHtml(siswa.citaCita)}</span>
+                            </div>
+                            <div class="flex items-start space-x-2 text-xs text-slate-600">
+                                <i class="fa-solid fa-heart text-rose-500 mt-0.5 w-4"></i>
+                                <span class="line-clamp-1"><strong>Hobi:</strong> ${escapeHtml(siswa.hobi)}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 italic line-clamp-2 pt-1 border-t border-slate-100">
+                                "${escapeHtml(siswa.quote)}"
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-4 pt-1 flex items-center justify-between text-xs font-bold text-emerald-800 group-hover:text-amber-600 transition">
+                        <span>Lihat Biodata Lengkap</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        window.openModalSiswa = function(itemKey) {
+            activeModalSiswaId = itemKey;
+            activeModalPhotoMode = currentPhotoMode;
+            renderModalSiswaContent(itemKey);
+            document.getElementById('modal-siswa').classList.remove('hidden');
+        }
+
+        window.switchModalSiswaPhoto = function(mode) {
+            activeModalPhotoMode = mode;
+            if (activeModalSiswaId) {
+                renderModalSiswaContent(activeModalSiswaId);
+            }
+        }
+
+        function renderModalSiswaContent(itemKey) {
+            const siswa = dataSiswa.find(s => (s.docId || s.id) === itemKey);
+            if (!siswa) return;
+
+            const photoUrl = activeModalPhotoMode === 'kasual' 
+                ? (siswa.fotoKasual || siswa.fotoFormal) 
+                : (siswa.fotoFormal || siswa.fotoKasual);
+
+            const content = document.getElementById('modal-siswa-content');
+            content.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-12">
+                    <div class="md:col-span-5 relative bg-slate-900 aspect-[4/5] md:aspect-auto md:min-h-[440px]">
+                        <img src="${photoUrl}" alt="${escapeHtml(siswa.namaLengkap)}" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x500/064e3b/ffffff?text=${encodeURIComponent(siswa.panggilan || 'Siswa')}'">
+                        <div class="absolute bottom-3 left-3 right-3 flex justify-center bg-black/60 backdrop-blur-md p-1 rounded-xl border border-white/15">
+                            <button type="button" onclick="switchModalSiswaPhoto('formal')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition ${activeModalPhotoMode === 'formal' ? 'bg-amber-500 text-emerald-950' : 'text-white hover:bg-white/10'}">
+                                Foto Formal
+                            </button>
+                            <button type="button" onclick="switchModalSiswaPhoto('kasual')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition ${activeModalPhotoMode === 'kasual' ? 'bg-amber-500 text-emerald-950' : 'text-white hover:bg-white/10'}">
+                                Foto Kasual
+                            </button>
+                        </div>
+                    </div>
+                    <div class="md:col-span-7 p-6 sm:p-8 space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2 pr-8">
+                            <div>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">${escapeHtml(siswa.kelas)}</span>
+                                <h3 class="font-serif text-xl sm:text-2xl font-bold text-slate-900 mt-2">${escapeHtml(siswa.namaLengkap)}</h3>
+                                <p class="text-xs font-semibold text-amber-600">Panggilan: ${escapeHtml(siswa.panggilan)}</p>
+                            </div>
+                            ${isAdmin ? `
+                                <button type="button" onclick="openAdminForm('siswa', '${itemKey}')" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow transition flex items-center space-x-1">
+                                    <i class="fa-solid fa-pen"></i>
+                                    <span>Edit Biodata</span>
+                                </button>
+                            ` : ''}
+                        </div>
+
+                        <div class="space-y-2.5 text-xs sm:text-sm text-slate-600 border-t border-slate-100 pt-3">
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-solid fa-cake-candles text-emerald-700 w-4 mt-1"></i>
+                                <div><span class="font-bold text-slate-800">TTL:</span> ${escapeHtml(siswa.ttl)}</div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-solid fa-location-dot text-emerald-700 w-4 mt-1"></i>
+                                <div><span class="font-bold text-slate-800">Alamat:</span> ${escapeHtml(siswa.alamat)}</div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-solid fa-graduation-cap text-emerald-700 w-4 mt-1"></i>
+                                <div><span class="font-bold text-slate-800">Cita-cita:</span> ${escapeHtml(siswa.citaCita)}</div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-solid fa-heart text-rose-500 w-4 mt-1"></i>
+                                <div><span class="font-bold text-slate-800">Hobi:</span> ${escapeHtml(siswa.hobi)}</div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-brands fa-instagram text-pink-600 w-4 mt-1"></i>
+                                <div><span class="font-bold text-slate-800">Sosmed:</span> ${escapeHtml(siswa.sosmed)} • <span class="font-bold text-slate-800">HP:</span> ${escapeHtml(siswa.telepon)}</div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-solid fa-envelope text-emerald-700 w-4 mt-1"></i>
+                                <div><span class="font-bold text-slate-800">Email:</span> ${escapeHtml(siswa.email)}</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4">
+                            <p class="text-xs sm:text-sm text-slate-700 italic">"${escapeHtml(siswa.quote)}"</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.closeModalSiswa = function() {
+            activeModalSiswaId = null;
+            document.getElementById('modal-siswa').classList.add('hidden');
+        }
+
+        // --- RENDER GALERI & AWARDS ---
+        function renderGaleriDanAwards() {
+            const galeriContainer = document.getElementById('grid-galeri');
+            galeriContainer.innerHTML = dataGaleri.map((item, idx) => {
+                const itemKey = item.docId || item.id;
+                return `
+                <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg transition group relative">
+                    ${isAdmin ? `
+                        <div class="absolute top-3 right-3 z-20 flex items-center space-x-1.5">
+                            <button type="button" onclick="openAdminForm('galeri', '${itemKey}')" title="Edit Galeri" class="w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center text-xs shadow-md transition cursor-pointer">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button type="button" onclick="promptDeleteAdminItem(event, 'yearbook_galeri', '${item.id || ''}', '${item.docId || ''}', '${escapeHtml(item.judul)}')" title="Hapus Foto" class="w-8 h-8 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-xs shadow-md transition cursor-pointer">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                    <div onclick="openModalGaleri(${idx})" class="relative h-56 overflow-hidden bg-slate-200 cursor-pointer">
+                        <img src="${item.foto}" alt="${escapeHtml(item.judul)}" class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/064e3b/ffffff?text=Dokumentasi'">
+                        <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-sm text-amber-300 text-[11px] font-semibold">
+                            ${escapeHtml(item.kategori)}
+                        </span>
+                    </div>
+                    <div class="p-5">
+                        <h4 class="font-serif font-bold text-lg text-slate-900 group-hover:text-emerald-800 transition">${escapeHtml(item.judul)}</h4>
+                        <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">${escapeHtml(item.deskripsi)}</p>
+                    </div>
+                </div>
+            `}).join('');
+
+            const awardsContainer = document.getElementById('grid-awards');
+            awardsContainer.innerHTML = dataAwards.map(aw => {
+                const itemKey = aw.docId || aw.id;
+                return `
+                <div class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-5 flex items-start space-x-4 hover:bg-white/15 transition relative">
+                    ${isAdmin ? `
+                        <div class="absolute top-3 right-3 flex items-center space-x-1 z-10">
+                            <button type="button" onclick="openAdminForm('awards', '${itemKey}')" title="Edit Award" class="w-7 h-7 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center text-xs transition cursor-pointer">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button type="button" onclick="promptDeleteAdminItem(event, 'yearbook_awards', '${aw.id || ''}', '${aw.docId || ''}', '${escapeHtml(aw.kategori)}')" title="Hapus Award" class="w-7 h-7 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-xs transition cursor-pointer">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center flex-shrink-0 text-xl">
+                        <i class="fa-solid ${aw.ikon || 'fa-award'}"></i>
+                    </div>
+                    <div class="${isAdmin ? 'pr-16' : 'pr-2'}">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-amber-300">${escapeHtml(aw.kategori)}</span>
+                        <h4 class="font-serif font-bold text-base sm:text-lg text-white mt-0.5">${escapeHtml(aw.pemenang)}</h4>
+                        <p class="text-xs text-emerald-100/80 mt-1 leading-relaxed">${escapeHtml(aw.alasan)}</p>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        window.openModalGaleri = function(index) {
+            const item = dataGaleri[index];
+            if (!item) return;
+            document.getElementById('lightbox-img').src = item.foto;
+            document.getElementById('lightbox-title').textContent = item.judul;
+            document.getElementById('lightbox-desc').textContent = item.deskripsi;
+            document.getElementById('modal-galeri').classList.remove('hidden');
+        }
+
+        window.closeModalGaleri = function() {
+            document.getElementById('modal-galeri').classList.add('hidden');
+        }
+
+        // --- HALAMAN TANDA TANGAN (CANVAS SIGNATURE & AUTOGRAPH WALL) ---
+        let canvas, ctx;
+        let isDrawing = false;
+        let hasDrawn = false;
+
+        function initSignatureCanvas() {
+            canvas = document.getElementById('sig-canvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            resizeSignatureCanvas();
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseout', stopDraw);
+
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                startDraw({ clientX: touch.clientX, clientY: touch.clientY });
+            });
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                draw({ clientX: touch.clientX, clientY: touch.clientY });
+            });
+            canvas.addEventListener('touchend', stopDraw);
+        }
+
+        function resizeSignatureCanvas() {
+            if (!canvas) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            if (rect.width > 0) {
+                canvas.width = rect.width;
+                canvas.height = 128;
+                ctx.lineWidth = 2.5;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#064e3b';
+            }
+        }
+
+        function startDraw(e) {
+            isDrawing = true;
+            hasDrawn = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function stopDraw() {
+            isDrawing = false;
+        }
+
+        window.clearSignature = function() {
+            if (!ctx || !canvas) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hasDrawn = false;
+        }
+
+        function getCompressedSignature() {
+            if (!hasDrawn) return null;
+            const tempCanvas = document.createElement('canvas');
+            const scale = 0.5;
+            tempCanvas.width = canvas.width * scale;
+            tempCanvas.height = canvas.height * scale;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(canvas, 0, 0, tempCanvas.width, tempCanvas.height);
+            return tempCanvas.toDataURL('image/png');
+        }
+
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+
+        window.submitAutograph = async function() {
+            const nama = document.getElementById('auto-nama').value.trim();
+            const pesan = document.getElementById('auto-pesan').value.trim();
+
+            if (!nama || !pesan) {
+                showToast("Mohon isi nama dan pesan kesan terlebih dahulu!", true);
+                return;
+            }
+
+            const btn = document.getElementById('btn-submit-autograph');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengirim...';
+
+            const sigDataUrl = getCompressedSignature();
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+            const recordId = 'auto_' + Date.now();
+            
+            const newEntry = {
+                nama: nama,
+                pesan: pesan,
+                waktu: formattedDate,
+                sigImg: sigDataUrl,
+                ttdText: nama.split(' ')[0],
+                createdAt: Date.now()
+            };
+
+            try {
+                await postToGas({
+                    action: 'upsert',
+                    collection: 'autographs',
+                    id: recordId,
+                    payload: newEntry
+                });
+
+                cloudAutographList.unshift({ docId: recordId, ...newEntry });
+                rebuildMergedLists();
+                showToast("Pesan & tanda tanganmu berhasil ditempelkan!");
+
+                document.getElementById('auto-nama').value = '';
+                document.getElementById('auto-pesan').value = '';
+                clearSignature();
+            } catch (err) {
+                console.error("Gagal mengirim autograph:", err);
+                showToast("Gagal mengirim pesan ke server. Coba lagi.", true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i> Tempelkan di Buku Tahunan';
+            }
+        }
+
+        function renderAutographWall() {
+            const wall = document.getElementById('autograph-wall');
+            const countBadge = document.getElementById('autograph-count');
+            const bgColors = ['bg-amber-50 border-amber-200', 'bg-emerald-50/70 border-emerald-200', 'bg-sky-50/70 border-sky-200', 'bg-rose-50/60 border-rose-200'];
+
+            if (countBadge) {
+                countBadge.textContent = `${dataAutograph.length} Pesan`;
+            }
+
+            wall.innerHTML = dataAutograph.map((item, idx) => {
+                const colorClass = bgColors[idx % bgColors.length];
+                const safeNama = escapeHtml(item.nama);
+                const safePesan = escapeHtml(item.pesan);
+                const safeTtd = escapeHtml(item.ttdText || item.nama.split(' ')[0]);
+                const safeWaktu = escapeHtml(item.waktu || '2026');
+
+                const signatureDisplay = item.sigImg 
+                    ? `<img src="${item.sigImg}" alt="TTD" class="h-12 object-contain ml-auto">`
+                    : `<span class="font-handwriting text-2xl font-bold text-emerald-900 ml-auto block text-right">${safeTtd}</span>`;
+
+                return `
+                <div class="${colorClass} border rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-3 relative">
+                    <div>
+                        <div class="flex justify-between items-center mb-2 gap-2">
+                            <span class="font-bold text-xs sm:text-sm text-slate-900">${safeNama}</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[10px] text-slate-400">${safeWaktu}</span>
+                                ${isAdmin ? `
+                                    <button type="button" onclick="promptDeleteAdminItem(event, 'autographs', '${item.id || ''}', '${item.docId || ''}', 'Pesan dari ${safeNama}')" title="Hapus Pesan" class="w-6 h-6 rounded-full bg-rose-100 hover:bg-rose-600 text-rose-600 hover:text-white flex items-center justify-center text-[10px] transition">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-700 note-paper pb-2">
+                            "${safePesan}"
+                        </p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200/60 flex items-end justify-between">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Tanda Tangan:</span>
+                        ${signatureDisplay}
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // --- TOAST NOTIFICATION ---
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-msg');
+
+            msg.textContent = message;
+            icon.className = isError 
+                ? 'fa-solid fa-circle-exclamation text-amber-400' 
+                : 'fa-solid fa-circle-check text-emerald-400';
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // --- INISIALISASI ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPembuka();
+            renderGuru();
+            renderSiswa();
+            renderGaleriDanAwards();
+            renderAutographWall();
+            initSignatureCanvas();
+            fetchAllFromGas();
+        });
+
+        window.addEventListener('resize', resizeSignatureCanvas);
+    </script>
+</body>
+</html>
