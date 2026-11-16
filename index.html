@@ -612,7 +612,7 @@
          * Ganti teks di bawah ini dengan URL Web App dari Google Apps Script Anda
          * Contoh: "https://script.google.com/macros/s/AKfycbx.../exec"
          */
-        let API_URL = "https://script.google.com/macros/s/AKfycbxUYeyBiWLR0vIggKx94cyfmli24GJa0q7-zJzDQL3pzUsQJx1KTj6g7JeYV184Q0On/exec";
+        let API_URL = "PASTE_URL_WEB_APP_GOOGLE_APPS_SCRIPT_ANDA_DISINI";
 
         // Memungkinkan override sementara dari pengaturan admin jika belum ditempel permanen di kode
         const savedUrlOverride = sessionStorage.getItem('ma_alfattah_api_url');
@@ -1754,10 +1754,24 @@
         // --- RENDER DATA GURU ---
         function renderGuru() {
             const container = document.getElementById('grid-guru');
-            container.innerHTML = dataGuru.map(guru => {
+            
+            // Urutkan data guru agar Kepala Madrasah (Drs. H. Ahmad Fauzi, M.Pd.I) selalu berada di urutan pertama
+            const sortedGuru = [...dataGuru].sort((a, b) => {
+                const isAKepala = (a.jabatan || '').toLowerCase().includes('kepala madrasah') || (a.nama || '').includes('Ahmad Fauzi');
+                const isBKepala = (b.jabatan || '').toLowerCase().includes('kepala madrasah') || (b.nama || '').includes('Ahmad Fauzi');
+                if (isAKepala) return -1;
+                if (isBKepala) return 1;
+                return 0;
+            });
+
+            container.innerHTML = sortedGuru.map(guru => {
                 const itemKey = guru.docId || guru.id;
+                const isKepalaSekolah = (guru.jabatan || '').toLowerCase().includes('kepala madrasah') || (guru.nama || '').includes('Ahmad Fauzi');
+                const specialCardClass = isKepalaSekolah ? 'ring-2 ring-amber-400 bg-gradient-to-br from-amber-50/40 via-white to-emerald-50/30' : 'bg-white';
+
                 return `
-                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between group relative">
+                <div class="${specialCardClass} rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between group relative">
+                    ${isKepalaSekolah ? `<span class="absolute top-3 left-6 px-2.5 py-0.5 rounded-full bg-amber-500 text-emerald-950 text-[10px] font-extrabold uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star mr-1"></i> Utama</span>` : ''}
                     ${isAdmin ? `
                         <div class="absolute top-4 right-4 flex items-center space-x-1.5 z-10">
                             <button type="button" onclick="openAdminForm('guru', '${itemKey}')" title="Edit Data Guru" class="w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center text-xs transition shadow-md cursor-pointer">
@@ -1768,9 +1782,9 @@
                             </button>
                         </div>
                     ` : ''}
-                    <div>
+                    <div class="${isKepalaSekolah && !isAdmin ? 'pt-3' : ''}">
                         <div class="flex items-center space-x-4 mb-4">
-                            <img src="${guru.foto}" alt="${escapeHtml(guru.nama)}" class="w-16 h-20 sm:w-20 sm:h-24 rounded-2xl object-cover object-top border-2 border-emerald-700/30 group-hover:border-amber-500 transition flex-shrink-0" onerror="this.src='https://placehold.co/200x200/064e3b/ffffff?text=Guru'">
+                            <img src="${guru.foto}" alt="${escapeHtml(guru.nama)}" class="w-16 h-20 sm:w-20 sm:h-24 rounded-2xl object-cover object-top border-2 border-emerald-700/30 group-hover:border-amber-500 transition flex-shrink-0 shadow-md" onerror="this.src='https://placehold.co/200x200/064e3b/ffffff?text=Guru'">
                             <div class="${isAdmin ? 'pr-20' : 'pr-4'}">
                                 <h3 class="font-serif font-bold text-base sm:text-lg text-slate-900 leading-snug">${escapeHtml(guru.nama)}</h3>
                                 <span class="inline-block mt-1 px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-semibold border border-emerald-200">
