@@ -614,11 +614,12 @@
          */
         const EMPTY_PHOTO = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500"><rect width="400" height="500" fill="#e2e8f0"/><circle cx="200" cy="190" r="70" fill="#cbd5e1"/><path d="M60 500c0-95 62-150 140-150s140 55 140 150z" fill="#cbd5e1"/></svg>');
         function pic(u) { return u && String(u).trim() ? u : EMPTY_PHOTO; }
-        let API_URL = "PASTE_URL_WEB_APP_GOOGLE_APPS_SCRIPT_ANDA_DISINI";
+        let API_URL = "https://script.google.com/macros/s/AKfycbwuMfjk-kpaf2Ow40A4BgvJpSVdTnlq3LAEA5RyiVGanF_D4Cezc7PDu_TpxT-ZyCBA/exec";
 
         // Memungkinkan override sementara dari pengaturan admin jika belum ditempel permanen di kode
         let savedUrlOverride = null; try { savedUrlOverride = localStorage.getItem('ma_alfattah_api_url'); } catch(e) {}
-        if (savedUrlOverride) {
+        // URL yang ditempel permanen di kode didahulukan; override browser hanya dipakai jika kode belum diisi
+        if (savedUrlOverride && !isApiConfigured()) {
             API_URL = savedUrlOverride;
         }
 
@@ -1114,9 +1115,9 @@
             const globalLabel = document.getElementById('global-sync-label');
 
             if (!isApiConfigured()) {
-                if (statusText) statusText.textContent = "API_URL belum diatur • Mode Lokal";
+                if (statusText) statusText.textContent = "API_URL belum diatur • Mode Offline";
                 if (globalDot) globalDot.className = "w-2 h-2 rounded-full bg-amber-400 mr-1.5";
-                if (globalLabel) globalLabel.textContent = "Mode Lokal";
+                if (globalLabel) globalLabel.textContent = "Mode Offline";
                 return;
             }
 
@@ -1155,7 +1156,7 @@
 
         async function postToGas(bodyObj) {
             if (!isApiConfigured()) {
-                return { status: 'local' };
+                throw new Error('API_URL belum diatur. Perubahan tidak akan tampil di perangkat lain.');
             }
             // Menggunakan text/plain agar terhindar dari preflight CORS OPTIONS di Google Apps Script
             const response = await fetch(API_URL, {
@@ -2323,6 +2324,11 @@
             rebuildMergedLists();
             initSignatureCanvas();
             fetchAllFromGas();
+            // Sinkronisasi otomatis tiap 30 detik agar perubahan dari perangkat lain muncul
+            setInterval(() => {
+                const formOpen = !document.getElementById('modal-admin-form').classList.contains('hidden');
+                if (!document.hidden && !formOpen) fetchAllFromGas();
+            }, 30000);
         });
 
         window.addEventListener('resize', resizeSignatureCanvas);
