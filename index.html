@@ -52,6 +52,27 @@
             background-image: repeating-linear-gradient(transparent, transparent 27px, #cbd5e1 28px);
             line-height: 28px;
         }
+        /* Teks rata kiri-kanan (justify) agar rapi */
+        main p, #modal-siswa p, #modal-galeri p {
+            text-align: justify;
+            text-justify: inter-word;
+            hyphens: auto;
+            -webkit-hyphens: auto;
+            overflow-wrap: break-word;
+        }
+        main p.text-center, main p.text-right { text-align: center; hyphens: manual; }
+        /* Foto lebih tajam */
+        img { image-rendering: auto; -webkit-font-smoothing: antialiased; }
+        /* Kartu guru */
+        .guru-card { transition: transform .3s ease, box-shadow .3s ease; }
+        .guru-card:hover { transform: translateY(-4px); }
+        .guru-card.dragging { opacity: .4; transform: scale(.97); }
+        .guru-card.drag-over { outline: 3px dashed #f59e0b; outline-offset: 4px; }
+        .guru-photo-wrap::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(2,44,34,.92) 0%, rgba(2,44,34,.45) 32%, transparent 62%);
+            pointer-events: none;
+        }
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -276,8 +297,8 @@
                         <i class="fa-solid fa-pen"></i>
                         <span>Edit Sambutan & Foto</span>
                     </button>
-                    <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
-                        <img id="sambutan-kepala-foto" src="" alt="Kepala Madrasah" class="w-28 h-32 sm:w-36 sm:h-40 rounded-2xl object-cover object-top border-4 border-amber-400/50 shadow-md flex-shrink-0" onerror="this.onerror=null;this.src=EMPTY_PHOTO">
+                    <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start">
+                        <img id="sambutan-kepala-foto" src="" alt="Kepala Madrasah" class="w-48 sm:w-56 md:w-64 aspect-[4/5] rounded-3xl object-cover object-top border-4 border-amber-400/60 shadow-xl flex-shrink-0" decoding="async" onerror="this.onerror=null;this.src=EMPTY_PHOTO">
                         <div class="space-y-3 text-center md:text-left">
                             <div>
                                 <span id="sambutan-kepala-jabatan" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Kepala Madrasah Aliyah Al Fattah</span>
@@ -297,8 +318,8 @@
                             <i class="fa-solid fa-pen"></i>
                             <span>Edit</span>
                         </button>
-                        <div class="flex items-center space-x-4 mb-4 pr-14">
-                            <img id="sambutan-wali_ipa-foto" src="" alt="Wali Kelas IPA" class="w-16 h-20 rounded-2xl object-cover object-top border-2 border-emerald-600 flex-shrink-0" onerror="this.onerror=null;this.src=EMPTY_PHOTO">
+                        <div class="flex items-center gap-4 sm:gap-5 mb-5 pr-14">
+                            <img id="sambutan-wali_ipa-foto" src="" alt="Wali Kelas IPA" class="w-32 sm:w-40 aspect-[4/5] rounded-2xl object-cover object-top border-4 border-emerald-600/70 shadow-lg flex-shrink-0" decoding="async" onerror="this.onerror=null;this.src=EMPTY_PHOTO">
                             <div>
                                 <span id="sambutan-wali_ipa-jabatan" class="text-xs font-bold text-blue-600 uppercase">Wali Kelas XII IPA</span>
                                 <h5 id="sambutan-wali_ipa-nama" class="font-serif text-lg font-bold text-slate-900">Siti Rahmawati, S.Si., M.Pd</h5>
@@ -314,8 +335,8 @@
                             <i class="fa-solid fa-pen"></i>
                             <span>Edit</span>
                         </button>
-                        <div class="flex items-center space-x-4 mb-4 pr-14">
-                            <img id="sambutan-wali_agama-foto" src="" alt="Wali Kelas Agama" class="w-16 h-20 rounded-2xl object-cover object-top border-2 border-amber-500 flex-shrink-0" onerror="this.onerror=null;this.src=EMPTY_PHOTO">
+                        <div class="flex items-center gap-4 sm:gap-5 mb-5 pr-14">
+                            <img id="sambutan-wali_agama-foto" src="" alt="Wali Kelas Agama" class="w-32 sm:w-40 aspect-[4/5] rounded-2xl object-cover object-top border-4 border-amber-500/70 shadow-lg flex-shrink-0" decoding="async" onerror="this.onerror=null;this.src=EMPTY_PHOTO">
                             <div>
                                 <span id="sambutan-wali_agama-jabatan" class="text-xs font-bold text-emerald-700 uppercase">Wali Kelas XII Keagamaan</span>
                                 <h5 id="sambutan-wali_agama-nama" class="font-serif text-lg font-bold text-slate-900">Ust. Muhammad Ridwan, Lc., M.A</h5>
@@ -344,10 +365,18 @@
                     <button type="button" onclick="openAdminForm('guru')" class="admin-only hidden px-4 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition flex items-center">
                         <i class="fa-solid fa-plus mr-1.5"></i> Tambah Guru / Staf
                     </button>
+                    <button type="button" onclick="resetGuruOrder()" class="admin-only hidden px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs font-bold transition flex items-center">
+                        <i class="fa-solid fa-rotate-left mr-1.5"></i> Reset Urutan
+                    </button>
                 </div>
             </div>
 
-            <div id="grid-guru" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div class="admin-only hidden bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded-2xl px-4 py-3">
+                <i class="fa-solid fa-arrows-up-down-left-right mr-1.5"></i>
+                <strong>Atur urutan:</strong> seret (drag) kartu ke posisi baru, atau gunakan tombol panah &larr; &rarr; dan kolom nomor posisi pada setiap kartu. Urutan tersimpan otomatis.
+            </div>
+
+            <div id="grid-guru" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"></div>
         </section>
 
         <!-- 3. HALAMAN BIODATA SISWA -->
@@ -1494,7 +1523,7 @@
                     } else if (type === 'sambutan') {
                         docKey = `sambutan_${subKey}`;
                         const file = document.getElementById('adm-sambutan-file').files[0];
-                        const imgBase64 = await compressImageFile(file, 360, 0.7);
+                        const imgBase64 = await compressImageFile(file, 440, 0.85, 0.8);
                         dataObj = {
                             jabatan: document.getElementById('adm-sambutan-jabatan').value.trim(),
                             nama: document.getElementById('adm-sambutan-nama').value.trim(),
@@ -1533,7 +1562,7 @@
                 if (type === 'guru') {
                     collectionName = "yearbook_guru";
                     const file = document.getElementById('adm-guru-file').files[0];
-                    const imgBase64 = await compressImageFile(file, 360, 0.7);
+                    const imgBase64 = await compressImageFile(file, 560, 0.85, 0.8);
                     payload = {
                         ...payload,
                         nama: document.getElementById('adm-guru-nama').value.trim(),
@@ -1545,8 +1574,8 @@
                     collectionName = "yearbook_siswa";
                     const fileFormal = document.getElementById('adm-siswa-foto-formal').files[0];
                     const fileKasual = document.getElementById('adm-siswa-foto-kasual').files[0];
-                    const imgFormal = await compressImageFile(fileFormal, 400, 0.7);
-                    const imgKasual = await compressImageFile(fileKasual, 400, 0.7);
+                    const imgFormal = await compressImageFile(fileFormal, 520, 0.85, 0.8);
+                    const imgKasual = await compressImageFile(fileKasual, 520, 0.85, 0.8);
                     const panggilan = document.getElementById('adm-siswa-panggilan').value.trim();
 
                     payload = {
@@ -1569,7 +1598,7 @@
                 } else if (type === 'galeri') {
                     collectionName = "yearbook_galeri";
                     const file = document.getElementById('adm-galeri-file').files[0];
-                    const imgGaleri = await compressImageFile(file, 600, 0.7);
+                    const imgGaleri = await compressImageFile(file, 900, 0.85);
                     payload = {
                         ...payload,
                         judul: document.getElementById('adm-galeri-judul').value.trim(),
@@ -1718,37 +1747,76 @@
             renderAutographWall();
         }
 
-        // --- KOMPRESI GAMBAR (DIOPTIMALKAN AGAR MUAT DI SEL GOOGLE SHEETS < 45KB) ---
-        async function compressImageFile(file, maxWidth = 400, quality = 0.68) {
+        // --- KOMPRESI GAMBAR (TAJAM, TETAP MUAT DI SEL GOOGLE SHEETS < 46.000 KARAKTER) ---
+        // aspect (lebar/tinggi) opsional: foto dipotong rapi (fokus ke bagian atas/wajah) sebelum dikompres.
+        // Resolusi dipertahankan setinggi mungkin; kualitas diturunkan bertahap hanya sampai ukuran muat.
+        async function compressImageFile(file, maxWidth = 400, quality = 0.85, aspect = null) {
             if (!file) return null;
+            const LIMIT = 46000;
             return new Promise((resolve) => {
                 const reader = new FileReader();
-                reader.readAsDataURL(file);
+                reader.onerror = () => resolve(null);
                 reader.onload = (event) => {
                     const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
-                        }
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        let dataUrl = canvas.toDataURL('image/jpeg', quality);
-                        // Pastikan panjang string Base64 aman di bawah batas 50.000 karakter sel Google Sheets
-                        if (dataUrl.length > 46000) {
-                            dataUrl = canvas.toDataURL('image/jpeg', 0.45);
-                        }
-                        resolve(dataUrl);
-                    };
                     img.onerror = () => resolve(null);
+                    img.onload = () => {
+                        // 1. Area sumber (crop opsional)
+                        let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+                        if (aspect) {
+                            if (sw / sh > aspect) {            // terlalu lebar -> potong sisi kiri/kanan
+                                const nw = Math.round(sh * aspect);
+                                sx = Math.round((sw - nw) / 2); sw = nw;
+                            } else {                           // terlalu tinggi -> potong bawah (wajah tetap)
+                                const nh = Math.round(sw / aspect);
+                                sy = Math.round((sh - nh) * 0.15); sh = nh;
+                            }
+                        }
+
+                        // 2. Perkecil bertahap (halving) agar hasil tajam, bukan blur
+                        const render = (targetW) => {
+                            const targetH = Math.round(targetW * sh / sw);
+                            let cur = document.createElement('canvas');
+                            cur.width = sw; cur.height = sh;
+                            let c = cur.getContext('2d');
+                            c.imageSmoothingEnabled = true; c.imageSmoothingQuality = 'high';
+                            c.fillStyle = '#ffffff'; c.fillRect(0, 0, sw, sh);
+                            c.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+                            let w = sw, h = sh;
+                            while (w / 2 > targetW) {
+                                const nw = Math.round(w / 2), nh = Math.round(h / 2);
+                                const next = document.createElement('canvas');
+                                next.width = nw; next.height = nh;
+                                const nc = next.getContext('2d');
+                                nc.imageSmoothingEnabled = true; nc.imageSmoothingQuality = 'high';
+                                nc.drawImage(cur, 0, 0, w, h, 0, 0, nw, nh);
+                                cur = next; w = nw; h = nh;
+                            }
+                            const out = document.createElement('canvas');
+                            out.width = targetW; out.height = targetH;
+                            const oc = out.getContext('2d');
+                            oc.imageSmoothingEnabled = true; oc.imageSmoothingQuality = 'high';
+                            oc.drawImage(cur, 0, 0, w, h, 0, 0, targetW, targetH);
+                            return out;
+                        };
+
+                        // 3. Cari kombinasi resolusi tertinggi + kualitas terbaik yang masih muat
+                        const startW = Math.min(maxWidth, sw);
+                        const widthSteps = [1, 0.88, 0.77, 0.67, 0.58, 0.5].map(f => Math.round(startW * f));
+                        const qualities = [Math.min(quality, 0.88), 0.8, 0.72, 0.65, 0.58, 0.52, 0.46];
+                        let best = null;
+                        for (const w of widthSteps) {
+                            const cv = render(w);
+                            for (const q of qualities) {
+                                const url = cv.toDataURL('image/jpeg', q);
+                                best = url;
+                                if (url.length <= LIMIT) { resolve(url); return; }
+                            }
+                        }
+                        resolve(best);
+                    };
+                    img.src = event.target.result;
                 };
-                reader.onerror = () => resolve(null);
+                reader.readAsDataURL(file);
             });
         }
 
@@ -1788,53 +1856,157 @@
         // --- RENDER DATA GURU ---
         function renderGuru() {
             const container = document.getElementById('grid-guru');
-            
-            // Urutkan data guru agar Kepala Madrasah (Drs. H. Ahmad Fauzi, M.Pd.I) selalu berada di urutan pertama
-            const sortedGuru = [...dataGuru].sort((a, b) => {
-                const isAKepala = (a.jabatan || '').toLowerCase().includes('kepala madrasah') || (a.nama || '').includes('Ahmad Fauzi');
-                const isBKepala = (b.jabatan || '').toLowerCase().includes('kepala madrasah') || (b.nama || '').includes('Ahmad Fauzi');
-                if (isAKepala) return -1;
-                if (isBKepala) return 1;
-                return 0;
-            });
+            const sortedGuru = getSortedGuru();
+            const total = sortedGuru.length;
 
-            container.innerHTML = sortedGuru.map(guru => {
+            container.innerHTML = sortedGuru.map((guru, idx) => {
                 const itemKey = guru.docId || guru.id;
-                const isKepalaSekolah = (guru.jabatan || '').toLowerCase().includes('kepala madrasah') || (guru.nama || '').includes('Ahmad Fauzi');
-                const specialCardClass = isKepalaSekolah ? 'ring-2 ring-amber-400 bg-gradient-to-br from-amber-50/40 via-white to-emerald-50/30' : 'bg-white';
+                const safeKey = escapeHtml(itemKey);
 
                 return `
-                <div class="${specialCardClass} rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between group relative">
-                    ${isKepalaSekolah ? `<span class="absolute top-3 left-6 px-2.5 py-0.5 rounded-full bg-amber-500 text-emerald-950 text-[10px] font-extrabold uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star mr-1"></i> Utama</span>` : ''}
-                    ${isAdmin ? `
-                        <div class="absolute top-4 right-4 flex items-center space-x-1.5 z-10">
-                            <button type="button" onclick="openAdminForm('guru', '${itemKey}')" title="Edit Data Guru" class="w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center text-xs transition shadow-md cursor-pointer">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            <button type="button" onclick="promptDeleteAdminItem(event, 'yearbook_guru', '${guru.id || ''}', '${guru.docId || ''}', '${escapeHtml(guru.nama)}')" title="Hapus Data Guru" class="w-8 h-8 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-xs transition shadow-md cursor-pointer">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    ` : ''}
-                    <div class="${isKepalaSekolah && !isAdmin ? 'pt-3' : ''}">
-                        <div class="flex items-center space-x-4 mb-4">
-                            <img src="${pic(guru.foto)}" alt="${escapeHtml(guru.nama)}" class="w-16 h-20 sm:w-20 sm:h-24 rounded-2xl object-cover object-top border-2 border-emerald-700/30 group-hover:border-amber-500 transition flex-shrink-0 shadow-md" onerror="this.onerror=null;this.src=EMPTY_PHOTO">
-                            <div class="${isAdmin ? 'pr-20' : 'pr-4'}">
-                                <h3 class="font-serif font-bold text-base sm:text-lg text-slate-900 leading-snug">${escapeHtml(guru.nama)}</h3>
-                                <span class="inline-block mt-1 px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-semibold border border-emerald-200">
-                                    ${escapeHtml(guru.jabatan)}
-                                </span>
+                <div class="guru-card bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-md hover:shadow-2xl flex flex-col group relative"
+                     data-key="${safeKey}" ${isAdmin ? 'draggable="true"' : ''}>
+                    <div class="guru-photo-wrap relative aspect-[4/5] w-full overflow-hidden bg-slate-200">
+                        <img src="${pic(guru.foto)}" alt="${escapeHtml(guru.nama)}" loading="lazy" decoding="async" draggable="false"
+                             class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-700"
+                             onerror="this.onerror=null;this.src=EMPTY_PHOTO">
+                        ${isAdmin ? `
+                            <span class="absolute top-3 left-3 z-20 w-8 h-8 rounded-full bg-emerald-950/85 text-amber-300 text-xs font-extrabold flex items-center justify-center shadow">${idx + 1}</span>
+                            <div class="absolute top-3 right-3 z-20 flex items-center space-x-1.5">
+                                <button type="button" onclick="openAdminForm('guru', '${safeKey}')" title="Edit Data Guru" class="w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center text-xs transition shadow-md cursor-pointer">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button type="button" onclick="promptDeleteAdminItem(event, 'yearbook_guru', '${guru.id || ''}', '${guru.docId || ''}', '${escapeHtml(guru.nama)}')" title="Hapus Data Guru" class="w-8 h-8 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-xs transition shadow-md cursor-pointer">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
                             </div>
+                        ` : ''}
+                        <div class="absolute bottom-0 left-0 right-0 z-10 p-5 text-white">
+                            <span class="inline-block mb-2 px-3 py-1 rounded-full bg-amber-500 text-emerald-950 text-[11px] font-bold shadow">
+                                ${escapeHtml(guru.jabatan)}
+                            </span>
+                            <h3 class="font-serif font-bold text-lg sm:text-xl leading-snug drop-shadow">${escapeHtml(guru.nama)}</h3>
                         </div>
-                        <div class="bg-amber-50/70 rounded-2xl p-4 border border-amber-200/60 relative">
-                            <i class="fa-solid fa-quote-left text-amber-400/50 text-xl absolute top-3 left-3"></i>
-                            <p class="text-slate-700 text-xs sm:text-sm italic pl-5 leading-relaxed">
-                                "${escapeHtml(guru.quote)}"
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between gap-4">
+                        <div class="bg-amber-50/70 rounded-2xl p-4 pl-11 border border-amber-200/60 relative">
+                            <i class="fa-solid fa-quote-left text-amber-400/70 text-xl absolute top-3.5 left-3.5"></i>
+                            <p class="text-slate-700 text-xs sm:text-sm italic leading-relaxed">
+                                ${escapeHtml(guru.quote)}
                             </p>
                         </div>
+                        ${isAdmin ? `
+                            <div class="flex items-center justify-between gap-2 pt-3 border-t border-slate-100">
+                                <button type="button" onclick="moveGuru('${safeKey}', -1)" ${idx === 0 ? 'disabled' : ''} title="Geser ke posisi sebelumnya" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-emerald-100 text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                </button>
+                                <label class="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600">
+                                    Posisi
+                                    <input type="number" min="1" max="${total}" value="${idx + 1}" onchange="moveGuruTo('${safeKey}', this.value)" class="w-14 px-2 py-1.5 rounded-lg border border-slate-300 text-center text-xs font-bold">
+                                    / ${total}
+                                </label>
+                                <button type="button" onclick="moveGuru('${safeKey}', 1)" ${idx === total - 1 ? 'disabled' : ''} title="Geser ke posisi berikutnya" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-emerald-100 text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             `}).join('');
+
+            if (isAdmin) bindGuruDragDrop(container);
+        }
+
+        // --- URUTAN GURU & STAF (MANUAL) ---
+        function isKepalaGuru(g) {
+            return (g.jabatan || '').toLowerCase().includes('kepala madrasah') || (g.nama || '').includes('Ahmad Fauzi');
+        }
+
+        function getSortedGuru() {
+            const list = [...dataGuru];
+            const saved = (cloudPembukaOverrides.urutan_guru && Array.isArray(cloudPembukaOverrides.urutan_guru.order))
+                ? cloudPembukaOverrides.urutan_guru.order : [];
+
+            if (saved.length === 0) {
+                // Belum ada urutan manual: Kepala Madrasah di depan
+                return list.sort((a, b) => (isKepalaGuru(b) ? 1 : 0) - (isKepalaGuru(a) ? 1 : 0));
+            }
+            const pos = new Map(saved.map((k, i) => [k, i]));
+            const ordered = list.filter(g => pos.has(g.docId || g.id))
+                .sort((a, b) => pos.get(a.docId || a.id) - pos.get(b.docId || b.id));
+            const rest = list.filter(g => !pos.has(g.docId || g.id)); // guru baru di bagian akhir
+            return [...ordered, ...rest];
+        }
+
+        async function saveGuruOrder(keys) {
+            const payload = { order: keys, updatedAt: Date.now() };
+            cloudPembukaOverrides.urutan_guru = payload;
+            rebuildMergedLists();
+            try {
+                await postToGas({ action: 'upsert', collection: 'yearbook_pembuka', id: 'urutan_guru', payload });
+                showToast('Urutan guru & staf tersimpan!');
+            } catch (err) {
+                console.error('Gagal simpan urutan:', err);
+                showToast('Urutan tersimpan di browser ini, tetapi gagal dikirim ke Google Sheets.', true);
+            }
+        }
+
+        window.moveGuru = function(key, delta) {
+            if (!isAdmin) return;
+            const keys = getSortedGuru().map(g => g.docId || g.id);
+            const from = keys.indexOf(key);
+            const to = from + delta;
+            if (from < 0 || to < 0 || to >= keys.length) return;
+            keys.splice(to, 0, keys.splice(from, 1)[0]);
+            saveGuruOrder(keys);
+        }
+
+        window.moveGuruTo = function(key, position) {
+            if (!isAdmin) return;
+            const keys = getSortedGuru().map(g => g.docId || g.id);
+            const from = keys.indexOf(key);
+            let to = parseInt(position, 10) - 1;
+            if (isNaN(to) || from < 0) return renderGuru();
+            to = Math.max(0, Math.min(keys.length - 1, to));
+            if (from === to) return renderGuru();
+            keys.splice(to, 0, keys.splice(from, 1)[0]);
+            saveGuruOrder(keys);
+        }
+
+        window.resetGuruOrder = function() {
+            if (!isAdmin) return;
+            saveGuruOrder([]);
+        }
+
+        function bindGuruDragDrop(container) {
+            let dragKey = null;
+            container.querySelectorAll('.guru-card').forEach(card => {
+                card.addEventListener('dragstart', (e) => {
+                    dragKey = card.dataset.key;
+                    card.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                    try { e.dataTransfer.setData('text/plain', dragKey); } catch (err) {}
+                });
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                    container.querySelectorAll('.drag-over').forEach(c => c.classList.remove('drag-over'));
+                });
+                card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('drag-over'); });
+                card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+                card.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    card.classList.remove('drag-over');
+                    const targetKey = card.dataset.key;
+                    if (!dragKey || dragKey === targetKey) return;
+                    const keys = getSortedGuru().map(g => g.docId || g.id);
+                    const from = keys.indexOf(dragKey);
+                    const to = keys.indexOf(targetKey);
+                    dragKey = null;
+                    if (from < 0 || to < 0) return;
+                    keys.splice(to, 0, keys.splice(from, 1)[0]);
+                    saveGuruOrder(keys);
+                });
+            });
         }
 
         // --- FILTER, PENCARIAN & MODE FOTO SISWA ---
